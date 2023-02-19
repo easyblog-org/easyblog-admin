@@ -19,7 +19,7 @@ export function filterAsyncRoutes(routes, roles) {
 }
 
 /**
- * 使用 meta.role 来确定当前用户是否具有权限
+ * 使用 meta.account 来确定当前用户是否具有权限
  * @param roles
  * @param route
  */

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-  import UserTable from './components/UserTable.vue'
+import UserTable from './components/UserTable.vue'
 </script>
 
 <style scoped lang="scss">
