@@ -1,7 +1,8 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './routers'
 import pinia from "./store";
+import {formatDateTime} from '@/utils/date'
 
 import {registerElIcons} from "@/plugins/ElIcons"
 // 引入全局组件布局
@@ -25,8 +26,22 @@ import "@/assets/iconfont/iconfont.js";
 const app = createApp(App)
 registerElIcons(app)
 
-app.component('svg-icon',SvgIcon)
-app.component('PageWrapLayout',PageWrapLayout)
+app.component('svg-icon', SvgIcon)
+app.component('PageWrapLayout', PageWrapLayout)
+
+// 全局过滤器
+app.config.globalProperties.$filters = {
+    // 首字母大写
+    capitalize: (value: string) => {
+        if (!value) return '';
+        value = value.toString();
+        return value.charAt(0).toUpperCase() + value.slice(1);
+    },
+    // 时间格式化
+    formatDateTime: (timestamp: number, pattern?: string) => {
+        return formatDateTime(timestamp, pattern);
+    }
+};
 
 app.use(pinia)
 app.use(router)

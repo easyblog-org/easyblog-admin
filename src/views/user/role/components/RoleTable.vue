@@ -2,8 +2,15 @@
   <div class="m-user-table">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="formInline.username" placeholder="请输入用户名"/>
+        <el-form-item>
+          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select">
+            <template #prepend>
+              <el-select v-model="formInline.query_key" placeholder="角色名称" style="width: 120px">
+                <el-option label="角色名称" value="name"/>
+                <el-option label="角色标识" value="code"/>
+              </el-select>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" :icon="Search">查询</el-button>
@@ -17,18 +24,14 @@
           <el-icon>
             <Plus/>
           </el-icon>
-          新增用户
+          新增角色
         </el-button>
       </div>
       <div class="table-inner">
-        <el-table v-loading="loading" :data="userList" style="width: 100%; height: 100%" border>
-          <el-table-column prop="code" label="用户Code" align="center" width="100"/>
-          <el-table-column prop="nick_name" label="昵称" align="center" width="120"/>
-          <el-table-column prop="role.name" label="角色" align="center" width="120"/>
-          <el-table-column prop="integration" label="积分" align="center"/>
-          <el-table-column prop="level" label="等级" align="center" width="120"/>
-          <el-table-column prop="visit" label="文章访问量" align="center" width="120"/>
-          <el-table-column prop="active" label="用户状态" align="center" width="120">
+        <el-table v-loading="loading" :data="roleList" style="width: 100%; height: 100%" border>
+          <el-table-column prop="name" label="角色名称" align="center" width="100"/>
+          <el-table-column prop="code" label="角色标识" align="center" width="120"/>
+          <el-table-column prop="enabled" label="角色状态" align="center" width="120">
             <template #default="scope">
               <el-switch
                   inline-prompt
@@ -41,9 +44,10 @@
               />
             </template>
           </el-table-column>
-          <el-table-column prop="create_time" label="创建时间" align="center" width="180"/>
-          <el-table-column prop="update_time" label="更新时间" align="center" width="180"/>
-          <el-table-column prop="operator" label="操作" width="200px" align="center" fixed="right">
+          <el-table-column prop="description" label="角色描述" align="center" width="200" show-overflow-tooltip="true"/>
+          <el-table-column prop="create_time" :formatter="formatDate" label="创建时间" align="center" width="180"/>
+          <el-table-column prop="update_time" :formatter="formatDate" label="更新时间" align="center" width="180"/>
+          <el-table-column prop="operator" label="操作" align="center" fixed="right">
             <template #default="scope">
               <el-button type="primary" size="small" icon="Edit" @click="editHandler(scope.row)">
                 编辑
@@ -58,63 +62,94 @@
       <div class="pagination">
         <el-pagination
             v-model:currentPage="currentPage"
-            :page-size="userListRequestParam.limit"
+            :page-size="roleListRequestParam.limit"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            :total="userList.length"
+            :total="roleList.length"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
         />
       </div>
     </div>
 
-    <UserDialog ref="userDialog"/>
+    <RoleDialog ref="roleDialog"/>
   </div>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
-import UserDialog from './UserDialog.vue'
-import {userClient} from '@/api'
+import {roleClient} from '@/api'
+import RoleDialog from "@/views/user/role/components/RoleDialog.vue";
+import {formatDateTime} from "@/utils/date";
+
 
 const dialogVisible = ref(false)
-const userDialog = ref()
+const roleDialog = ref()
 const ruleFormRef = ref<FormInstance>()
-const formInline = reactive({})
+const formInline = reactive({
+  query_key: 'name',
+  query_value: null
+})
 const loading = ref(true)
-let userList = ref([])
+let roleList = ref([])
 let currentPage = ref(1)
-let userListRequestParam = {
-  ids: null,
-  status: null,
-  level: null,
-  nick_name: null,
-  sections: null,
+let roleListRequestParam = {
+  id: null,
+  codes: null,
+  name: null,
+  enabled: null,
   limit: 10,
   offset: currentPage.value - 1,
 }
 
+
+/**
+ * 格式化日期
+ * @param row
+ * @param column
+ * @param cellValue
+ * @param index
+ */
+const formatDate = (row, column, cellValue, index) => {
+  return formatDateTime(cellValue);
+}
+
+/**
+ * 提交查询
+ */
 const onSubmit = () => {
   console.log('submit!', formInline)
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  let query: string = formInline.query_key;
+  roleListRequestParam.enabled = true;
+  if (query === 'name') {
+    roleListRequestParam.name = formInline.query_value;
+  } else if (query === 'code') {
+    roleListRequestParam.codes = formInline.query_value;
+  }
+  loadRoleList()
+  loading.value = false
+  roleListRequestParam.name = null;
+  roleListRequestParam.codes = null;
 }
 
 const reset = (formEl: FormInstance | undefined) => {
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  roleListRequestParam.enabled = null;
+  roleListRequestParam.name = null;
+  roleListRequestParam.codes = null;
+  formInline.query_value = null
+  formInline.query_key = 'name'
+  loadRoleList()
+  loading.value = false
 }
 
 const addHandler = () => {
-  userDialog.value.show()
+  roleDialog.value.show()
 }
 const editHandler = (row) => {
-  userDialog.value.show(row)
+  roleDialog.value.show(row)
 }
 
 const del = (row) => {
@@ -132,7 +167,7 @@ const del = (row) => {
 const changeStatus = (row) => {
   console.log(row)
   ElMessageBox.confirm(
-      `确定要${!row.status ? '禁用' : '启用'}用户${row.nick_name}的账户吗？`,
+      `确定要${!row.status ? '禁用' : '启用'}当前角色吗？`,
       '温馨提示',
       {
         confirmButtonText: '确定',
@@ -141,9 +176,10 @@ const changeStatus = (row) => {
       },
   ).then(async () => {
 
-  }).catch(() => {
-        row.status = !row.status
   })
+      .catch(() => {
+        row.status = !row.status
+      })
 }
 
 const handleSizeChange = (val: number) => {
@@ -152,28 +188,28 @@ const handleSizeChange = (val: number) => {
 
 const handleCurrentChange = (val: number) => {
   currentPage.value = val - 1
-  loadUserList()
+  loadRoleList()
 }
 
 /**
  * 加载列表数据
  */
-const loadUserList = () => {
+const loadRoleList = () => {
   loading.value = true
-  userListRequestParam.sections='accounts,account'
-  userClient.list(userListRequestParam).then((resp) => {
+  roleClient.list(roleListRequestParam).then((resp) => {
     const list = resp.list
     for (let i = 0; i < list.length; i++) {
-      list[i].status = list[i].active === 1
+      list[i].status = list[i].enabled
     }
-    userList.value = list
+    roleList.value = list
+    console.log(roleList.value)
   }).finally(() => {
     loading.value = false
   })
 }
 
 onMounted(() => {
-  loadUserList()
+  loadRoleList()
 })
 </script>
 <style lang="scss" scoped>

@@ -16,13 +16,19 @@ const userRouter = [{
             path: 'user',
             component: () => import('@/views/user/user/index.vue'),
             name: 'user',
-            meta: { title: '用户管理' , icon: 'MenuIcon'}
+            meta: { title: '用户管理' , icon: 'User'}
         },
         {
             path: 'role',
             component: () => import('@/views/user/role/index.vue'),
             name: 'role',
-            meta: { title: '角色管理', icon: 'MenuIcon' }
+            meta: { title: '角色管理' , icon: 'Avatar'}
+        },
+        {
+            path: 'account',
+            component: () => import('@/views/user/account/index.vue'),
+            name: 'account',
+            meta: { title: '账户管理', icon: 'MenuIcon' }
         }
     ]
 }]

@@ -1,3 +1,3 @@
-export var HttpConstants={
-    'SUCCESS':'success'
+export const HttpConstants = {
+    SUCCESS: 'success',
 }
