@@ -3,7 +3,8 @@
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
         <el-form-item>
-          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select">
+          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
+                    @keydown.enter="onSubmit">
             <template #prepend>
               <el-select v-model="formInline.query_key" placeholder="角色名称" style="width: 120px">
                 <el-option label="角色名称" value="name"/>
@@ -44,7 +45,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column prop="description" label="角色描述" align="center" width="200" show-overflow-tooltip="true"/>
+          <el-table-column prop="description" label="角色描述" align="center" width="200" :show-overflow-tooltip="true"/>
           <el-table-column prop="create_time" :formatter="formatDate" label="创建时间" align="center" width="180"/>
           <el-table-column prop="update_time" :formatter="formatDate" label="更新时间" align="center" width="180"/>
           <el-table-column prop="operator" label="操作" align="center" fixed="right">
@@ -158,14 +159,18 @@ const del = (row) => {
     cancelButtonText: '取消',
     type: 'warning',
     draggable: true,
+  }).then(() => {
+    switchRoleStatus(row['code'], !row['enabled'])
+  }).catch(() => {
+    loading.value = false
   })
-      .then(() => {
-      })
-      .catch(() => {
-      })
 }
+
+/**
+ * 更新状态
+ * @param row
+ */
 const changeStatus = (row) => {
-  console.log(row)
   ElMessageBox.confirm(
       `确定要${!row.status ? '禁用' : '启用'}当前角色吗？`,
       '温馨提示',
@@ -175,19 +180,48 @@ const changeStatus = (row) => {
         type: 'warning',
       },
   ).then(async () => {
-
+    switchRoleStatus(row['code'], !row['enabled'])
+  }).catch(() => {
+    row.status = !row.status
+    ElMessage({
+      message: '更新失败',
+      type: 'error',
+    })
   })
-      .catch(() => {
-        row.status = !row.status
-      })
 }
 
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+/**
+ * 切换角色状态
+ * @param key
+ * @param enabled
+ */
+const switchRoleStatus = (key: string, enabled: boolean) => {
+  loading.value = true
+  roleClient.update(key, {
+    enabled: enabled
+  })
+  loading.value = false
+  ElMessage({
+    message: '更新成功',
+    type: 'success',
+  })
 }
 
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val - 1
+/**
+ * 分页大小变化
+ * @param pageSize
+ */
+const handleSizeChange = (pageSize: number) => {
+  roleListRequestParam.limit = pageSize;
+  loadRoleList()
+}
+
+/**
+ * 翻页
+ * @param val
+ */
+const handleCurrentChange = (pageNo: number) => {
+  currentPage.value = pageNo - 1
   loadRoleList()
 }
 

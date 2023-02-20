@@ -1,18 +1,18 @@
 <template>
   <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px">
-      <el-form-item label="角色名称" prop="role_name">
-        <el-input v-model="ruleForm.role_name" placeholder="请输入用户名"/>
+      <el-form-item label="角色名称" prop="name">
+        <el-input v-model="ruleForm.name" placeholder="请输入用户名"/>
       </el-form-item>
-      <el-form-item label="角色标识" prop="role_code">
-        <el-input v-model="ruleForm.role_code" placeholder="请输入角色标识"/>
+      <el-form-item label="角色标识" prop="code" v-if="!isEdit">
+        <el-input v-model="ruleForm.code" placeholder="请输入角色标识"/>
       </el-form-item>
-      <el-form-item label="角色描述" prop="role_desc">
-        <el-input v-model="ruleForm.role_desc" placeholder="请输入角色描述"/>
+      <el-form-item label="角色描述" prop="desc">
+        <el-input v-model="ruleForm.description" placeholder="请输入角色描述"/>
       </el-form-item>
       <el-form-item label="角色状态">
         <el-switch
-            v-model="ruleForm.role_enabled"
+            v-model="ruleForm.enabled"
             inline-prompt
             active-text="启用"
             inactive-text="禁用"
@@ -34,37 +34,42 @@ import {roleClient} from '@/api'
 
 const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref<boolean>(false)
+const isEdit = ref<boolean>(false)
 const title = ref('新增角色')
-const emit = defineEmits(["loadRoleList"])
+const emits = defineEmits<{
+  (event: 'loadRoleList'): void
+}>();
 
 const rules = reactive({
-  role_name: [
+  name: [
     {required: true, message: '请输入角色名称', trigger: 'blur'},
-    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'},
+    {min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur'},
   ],
-  role_code: [{required: true, message: '请输入角色表示', trigger: 'blur'}],
-  role_enabled: [{required: true, message: '请选择角色是否启用', trigger: 'change'}]
+  code: [{required: true, message: '请输入角色表示', trigger: 'blur'}],
+  enabled: [{required: true, message: '请选择角色是否启用', trigger: 'change'}]
 })
 
 const ruleForm = reactive({
-  role_name: null,
-  role_code: null,
-  role_enabled: true,
-  role_desc: null
+  name: null,
+  code: null,
+  enabled: true,
+  description: null
 })
 
 function close() {
   ruleFormRef.value.resetFields()
   Object.keys(ruleForm).forEach((key) => {
-    if (key === 'role_enabled') ruleForm[key] = true
+    if (key === 'enabled') ruleForm[key] = true
     else ruleForm[key] = null
   })
 }
 
 const show = (item = {}) => {
   title.value = '新增角色'
-  if (item.role_code) {
+  isEdit.value = false
+  if (item['code'] !== undefined && item['code'] !== null) {
     title.value = '编辑角色'
+    isEdit.value = true
     Object.keys(item).forEach((key) => {
       ruleForm[key] = item[key]
     })
@@ -75,19 +80,37 @@ const show = (item = {}) => {
 const handleClose = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
-      roleClient.create({
-        name: ruleForm.role_name,
-        code: ruleForm.role_code,
-        enabled: ruleForm.role_enabled,
-        description: ruleForm.role_desc
-      })
+      if (isEdit.value) {
+        roleClient.update(ruleForm.code,{
+          name: ruleForm.name,
+          enabled: ruleForm.enabled,
+          description: ruleForm.description
+        })
+        ElMessage({
+          message: '更新成功',
+          type: 'success',
+        })
+      } else {
+        roleClient.create({
+          name: ruleForm.name,
+          code: ruleForm.code,
+          enabled: ruleForm.enabled,
+          description: ruleForm.description
+        })
+        ElMessage({
+          message: '创建成功',
+          type: 'success',
+        })
+      }
 
       //刷新父页面数据
-      emit("loadRoleList")
-      window.opener.location.reload();
+      emits('loadRoleList')
       dialogVisible.value = false
     } else {
-      console.log('error submit!', fields)
+      ElMessage({
+        message: '校验未通过',
+        type: 'error',
+      })
     }
   })
 }
