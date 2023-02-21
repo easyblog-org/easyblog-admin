@@ -24,7 +24,14 @@
         <el-table v-loading="loading" :data="userList" style="width: 100%; height: 100%" border>
           <el-table-column prop="code" label="用户Code" align="center" width="100"/>
           <el-table-column prop="nick_name" label="昵称" align="center" width="120"/>
-          <el-table-column prop="role.name" label="角色" align="center" width="120"/>
+          <el-table-column prop="role.name" label="角色" align="center" width="120">
+            <template #default="scope">
+              <el-tag v-for="(value,index) in scope.row.roles" :key="value.id" class="mx-1"
+                      :class="index!==scope.row.roles.length-1?'m-tag-gap':''" size="default" round>
+                {{ value.name }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="integration" label="积分" align="center"/>
           <el-table-column prop="level" label="等级" align="center" width="120"/>
           <el-table-column prop="visit" label="文章访问量" align="center" width="120"/>
@@ -142,7 +149,7 @@ const changeStatus = (row) => {
   ).then(async () => {
 
   }).catch(() => {
-        row.status = !row.status
+    row.status = !row.status
   })
 }
 
@@ -160,13 +167,14 @@ const handleCurrentChange = (val: number) => {
  */
 const loadUserList = () => {
   loading.value = true
-  userListRequestParam.sections='accounts,account'
+  userListRequestParam.sections = 'accounts,role'
   userClient.list(userListRequestParam).then((resp) => {
     const list = resp.list
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].active === 1
     }
     userList.value = list
+    console.log(userList.value)
   }).finally(() => {
     loading.value = false
   })

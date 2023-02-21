@@ -236,7 +236,6 @@ const loadRoleList = () => {
       list[i].status = list[i].enabled
     }
     roleList.value = list
-    console.log(roleList.value)
   }).finally(() => {
     loading.value = false
   })
