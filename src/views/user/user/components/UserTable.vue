@@ -124,18 +124,45 @@ const editHandler = (row) => {
   userDialog.value.show(row)
 }
 
+/**
+ * 更新用户状态
+ */
+const switchUserStatus = (key: string, enabled: number) => {
+  //编辑用户信息
+  userClient.update(key, {
+    active: enabled,
+  }).then(() => {
+    ElMessage({
+      message: '更新成功',
+      type: 'success',
+    })
+  }).catch(() => {
+    ElMessage({
+      message: '更新失败',
+      type: 'error',
+    })
+  })
+}
+
+/**
+ * 删除用户
+ * @param row
+ */
 const del = (row) => {
   ElMessageBox.confirm('你确定要删除当前项吗?', '温馨提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
     draggable: true,
+  }).then(() => {
+    switchUserStatus(row['code'], !row['enabled'] ? 1 : 0)
   })
-      .then(() => {
-      })
-      .catch(() => {
-      })
 }
+
+/**
+ * 更新用户激活状态
+ * @param row
+ */
 const changeStatus = (row) => {
   console.log(row)
   ElMessageBox.confirm(
@@ -147,18 +174,27 @@ const changeStatus = (row) => {
         type: 'warning',
       },
   ).then(async () => {
-
+    switchUserStatus(row['code'], !row['enabled'] ? 1 : 0)
   }).catch(() => {
     row.status = !row.status
   })
 }
 
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+/**
+ * 分页大小变化
+ * @param pageSize
+ */
+const handleSizeChange = (pageSize: number) => {
+  userListRequestParam.limit = pageSize;
+  loadUserList()
 }
 
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val - 1
+/**
+ * 翻页
+ * @param pageNo
+ */
+const handleCurrentChange = (pageNo: number) => {
+  currentPage.value = pageNo - 1
   loadUserList()
 }
 
@@ -174,7 +210,6 @@ const loadUserList = () => {
       list[i].status = list[i].active === 1
     }
     userList.value = list
-    console.log(userList.value)
   }).finally(() => {
     loading.value = false
   })
