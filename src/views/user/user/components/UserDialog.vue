@@ -25,7 +25,7 @@
       <el-form-item label="账户密码">
         <el-input
             v-model="ruleForm.password"
-            placeholder="请输入账户密码,如果不输入默认 admin123456"
+            placeholder='请输入账户密码,如果不输入默认 admin123456'
             type="password"
             clearable
         />
@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
-import {roleClient, userClient} from "@/api";
+import {accountClient, roleClient, userClient} from "@/api";
 
 let roleList = ref([])
 const ruleFormRef = ref<FormInstance>()
@@ -98,6 +98,67 @@ const show = (item = {}) => {
 }
 
 /**
+ * 更新用户和账户信息
+ */
+const updateUserInfo = () => {
+  userClient.update(ruleForm.code, {
+    username: ruleForm.nick_name,
+    roles: ruleForm.roles,
+    email: ruleForm.email,
+    password: ruleForm.password,
+    active: ruleForm.status ? 1 : 0,
+  }).then((resp) => {
+    // 更新Account
+    if ((ruleForm.email !== undefined && ruleForm.email != null) ||
+        ruleForm.password !== undefined && ruleForm.password != null) {
+      accountClient.updateByIdentityType(resp.data, 1, ruleForm.email, ruleForm.password).then(() => {
+        ElMessage({
+          message: '更新成功',
+          type: 'success',
+        })
+      })
+    }
+  }).catch(() => {
+    ElMessage({
+      message: '更新失败',
+      type: 'error',
+    })
+  })
+}
+
+/**
+ * 创建User和账户
+ */
+const createUserAndAccount = () => {
+  userClient.create({
+    nickname: ruleForm.nick_name,
+    roles: ruleForm.roles,
+    password: ruleForm.password,
+    active: ruleForm.status ? 1 : 0,
+  }).then((resp) => {
+    console.log(resp.data);
+    if ((ruleForm.email !== undefined && ruleForm.email != null)) {
+      accountClient.create({
+        user_id: resp.data.id,
+        identityType: 1,   //email 类型
+        identifier: ruleForm.email,
+        credential: ruleForm.password != null ? ruleForm.password : 'admin123456'
+      }).then(() => {
+        ElMessage({
+          message: '创建成功',
+          type: 'success',
+        })
+      })
+    }
+  }).catch(() => {
+    ElMessage({
+      message: '创建失败',
+      type: 'error',
+    })
+  })
+}
+
+/**
  * 处理提交事件
  * @param done
  */
@@ -106,37 +167,12 @@ const handleSubmit = async (done: () => void) => {
     if (valid) {
       if (isEdit) {
         //编辑用户信息
-        userClient.update(ruleForm.code, {
-          username: ruleForm.nick_name,
-          roles: ruleForm.roles,
-          email: ruleForm.email,
-          password: ruleForm.password,
-          active: ruleForm.status,
-        })
-        ElMessage({
-          message: '更新成功',
-          type: 'success',
-        })
+        updateUserInfo()
       } else {
         //创建新用户
-        userClient.create({
-          nickname: ruleForm.nick_name,
-          roles: ruleForm.roles,
-          email: ruleForm.email,
-          password: ruleForm.password,
-          active: ruleForm.status,
-        })
-        ElMessage({
-          message: '编辑成功',
-          type: 'success',
-        })
+        createUserAndAccount()
       }
       dialogVisible.value = false
-    } else {
-      ElMessage({
-        message: '校验未通过',
-        type: 'error',
-      })
     }
   })
 }

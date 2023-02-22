@@ -8,6 +8,9 @@ class Client {
     }
 }
 
+/**
+ * 用户管理 相关接口
+ */
 export class UserClient extends Client {
 
     /**
@@ -44,6 +47,9 @@ export class UserClient extends Client {
     }
 }
 
+/**
+ * 角色管理 相关接口
+ */
 export class RolesClient extends Client {
 
     /**
@@ -77,5 +83,58 @@ export class RolesClient extends Client {
      */
     update(code: string, params: any): Promise<any> {
         return this.request.put('/v1/in/roles/' + code, params)
+    }
+}
+
+/**
+ * 账户管理 相关接口
+ */
+export class AccountClient extends Client {
+
+    /**
+     * 查询账户详情
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/in/account', params)
+    }
+
+    /**
+     * 查询账户列表
+     * @param params
+     */
+    list(params: any): Promise<any> {
+        return this.request.get('/v1/in/account/list', params)
+    }
+
+    /**
+     * 创建账户
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/in/account', params)
+    }
+
+    /**
+     * 更新账户信息
+     * @param accountId
+     * @param params
+     */
+    update(accountId: string, params: any): Promise<any> {
+        return this.request.put('/v1/in/account/' + accountId, params)
+    }
+
+    /**
+     * 以账号类型更新账号信息
+     * @param userId        用户id
+     * @param identityType  账号类型
+     * @param identifier    账号
+     * @param credential    密码
+     */
+    updateByIdentityType(userId: number, identityType: number, identifier?: string, credential?: string) {
+        return this.request.put('/v1/in/account/' + userId + '/' + identityType, {
+            identifier: identifier,
+            credential: credential
+        })
     }
 }

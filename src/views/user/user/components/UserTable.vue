@@ -155,7 +155,7 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchUserStatus(row['code'], !row['enabled'] ? 1 : 0)
+    switchUserStatus(row['code'],0)
   })
 }
 
@@ -164,7 +164,6 @@ const del = (row) => {
  * @param row
  */
 const changeStatus = (row) => {
-  console.log(row)
   ElMessageBox.confirm(
       `确定要${!row.status ? '禁用' : '启用'}用户${row.nick_name}的账户吗？`,
       '温馨提示',
@@ -174,7 +173,7 @@ const changeStatus = (row) => {
         type: 'warning',
       },
   ).then(async () => {
-    switchUserStatus(row['code'], !row['enabled'] ? 1 : 0)
+    switchUserStatus(row['code'], row.status ? 1 : 0)
   }).catch(() => {
     row.status = !row.status
   })

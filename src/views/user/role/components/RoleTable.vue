@@ -160,7 +160,7 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchRoleStatus(row['code'], !row['enabled'])
+    switchRoleStatus(row['code'], false)
   }).catch(() => {
     loading.value = false
   })
