@@ -27,9 +27,16 @@
           <el-table-column prop="role.name" label="角色" align="center" width="120">
             <template #default="scope">
               <el-tag v-for="(value,index) in scope.row.roles" :key="value.id" class="mx-1"
-                      :class="index!==scope.row.roles.length-1?'m-tag-gap':''" size="default" round>
+                      :class="index!==scope.row.roles.length-1?'m-tag-gap':''" size="default">
                 {{ value.name }}
               </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="accounts" label="账号" align="center" width="120">
+            <template #default="scope">
+              <el-button type="primary" text @click="showAccount(scope.row.accounts)">
+                查看
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column prop="integration" label="积分" align="center"/>
@@ -76,6 +83,7 @@
     </div>
 
     <UserDialog ref="userDialog"/>
+    <AccountDetailsDrawer ref="accountDialog"/>
   </div>
 </template>
 <script lang="ts" setup>
@@ -84,9 +92,11 @@ import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
 import UserDialog from './UserDialog.vue'
 import {userClient} from '@/api'
+import AccountDetailsDrawer from "@/views/user/account/components/AccountDetailsDrawer.vue";
 
 const dialogVisible = ref(false)
 const userDialog = ref()
+const accountDialog = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({})
 const loading = ref(true)
@@ -125,6 +135,13 @@ const editHandler = (row) => {
 }
 
 /**
+ * 展示账户详情页
+ */
+const showAccount = (accounts: any[]) => {
+  accountDialog.value.show(accounts)
+}
+
+/**
  * 更新用户状态
  */
 const switchUserStatus = (key: string, enabled: number) => {
@@ -155,7 +172,7 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchUserStatus(row['code'],0)
+    switchUserStatus(row['code'], 0)
   })
 }
 
@@ -209,6 +226,7 @@ const loadUserList = () => {
       list[i].status = list[i].active === 1
     }
     userList.value = list
+    console.log(list)
   }).finally(() => {
     loading.value = false
   })
