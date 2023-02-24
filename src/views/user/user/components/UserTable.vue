@@ -71,11 +71,11 @@
       </div>
       <div class="pagination">
         <el-pagination
-            v-model:currentPage="currentPage"
+            :currentPage="currentPage"
             :page-size="userListRequestParam.limit"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            :total="userList.length"
+            :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
         />
@@ -100,16 +100,17 @@ const accountDialog = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({})
 const loading = ref(true)
-let userList = ref([])
-let currentPage = ref(1)
-let userListRequestParam = {
+const userList = ref([])
+const currentPage = ref(1)
+const total = ref(0)
+const userListRequestParam = {
   ids: null,
   status: null,
   level: null,
   nick_name: null,
   sections: null,
   limit: 10,
-  offset: currentPage.value - 1,
+  offset: 0,
 }
 
 const onSubmit = () => {
@@ -202,6 +203,8 @@ const changeStatus = (row) => {
  */
 const handleSizeChange = (pageSize: number) => {
   userListRequestParam.limit = pageSize;
+  userListRequestParam.offset = 0
+  currentPage.value = 1
   loadUserList()
 }
 
@@ -210,8 +213,9 @@ const handleSizeChange = (pageSize: number) => {
  * @param pageNo
  */
 const handleCurrentChange = (pageNo: number) => {
-  currentPage.value = pageNo - 1
+  userListRequestParam.offset = (pageNo - 1) * userListRequestParam.limit
   loadUserList()
+  currentPage.value = pageNo
 }
 
 /**
@@ -222,6 +226,7 @@ const loadUserList = () => {
   userListRequestParam.sections = 'accounts,role'
   userClient.list(userListRequestParam).then((resp) => {
     const list = resp.list
+    total.value = resp.total
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].active === 1
     }

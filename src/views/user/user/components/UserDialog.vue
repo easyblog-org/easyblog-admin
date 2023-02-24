@@ -15,7 +15,7 @@
               v-for="item in roleList"
               :key="item.id"
               :label="item.name"
-              :value="item.name"
+              :value="item.code"
           />
         </el-select>
       </el-form-item>
@@ -48,9 +48,10 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
+import {ElMessageBox, ElMessage, FormInstance, FormRules} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
 import {accountClient, roleClient, userClient} from "@/api";
+import {validatorMethod, verifyEmail} from "@/utils/validate";
 
 let roleList = ref([])
 const ruleFormRef = ref<FormInstance>()
@@ -58,13 +59,15 @@ const dialogVisible = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const title = ref('新增用户')
 
-const rules = reactive({
-  username: [
+const rules = reactive<FormRules>({
+  nick_name: [
     {required: true, message: '请输入昵称', trigger: 'blur'},
     {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'},
   ],
   roles: [{required: true, message: '请选择角色', trigger: 'change'}],
-  email: [{required: true, message: '请输入邮箱', trigger: 'blur'}],
+  email: [
+    {required: true, validator: validatorMethod(verifyEmail, '请输入正确的邮箱'), trigger: 'blur'}
+  ],
 })
 
 const ruleForm = reactive({
@@ -131,25 +134,22 @@ const updateUserInfo = () => {
  */
 const createUserAndAccount = () => {
   userClient.create({
-    nickname: ruleForm.nick_name,
+    nick_name: ruleForm.nick_name,
     roles: ruleForm.roles,
-    password: ruleForm.password,
     active: ruleForm.status ? 1 : 0,
   }).then((resp) => {
-    console.log(resp.data);
-    if ((ruleForm.email !== undefined && ruleForm.email != null)) {
-      accountClient.create({
-        user_id: resp.data.id,
-        identityType: 1,   //email 类型
-        identifier: ruleForm.email,
-        credential: ruleForm.password != null ? ruleForm.password : 'admin123456'
-      }).then(() => {
-        ElMessage({
-          message: '创建成功',
-          type: 'success',
-        })
+    console.log(ruleForm)
+    accountClient.create({
+      user_id: resp.id,
+      identity_type: 1,   //email 类型
+      identifier: ruleForm.email,
+      credential: ruleForm.password != null ? ruleForm.password : 'admin123456'
+    }).then(() => {
+      ElMessage({
+        message: '创建成功',
+        type: 'success',
       })
-    }
+    })
   }).catch(() => {
     ElMessage({
       message: '创建失败',
@@ -165,11 +165,12 @@ const createUserAndAccount = () => {
 const handleSubmit = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
-      if (isEdit) {
+      if (isEdit.value) {
         //编辑用户信息
         updateUserInfo()
       } else {
         //创建新用户
+        console.log("Create User.......")
         createUserAndAccount()
       }
       dialogVisible.value = false
@@ -181,8 +182,8 @@ const handleSubmit = async (done: () => void) => {
  * 加载列表数据
  */
 const loadRoleList = () => {
-  roleClient.list(null).then((resp) => {
-    const list = resp.list
+  roleClient.listAll(null).then((resp) => {
+    const list = resp
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].enabled
     }

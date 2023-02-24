@@ -66,7 +66,7 @@
             :page-size="roleListRequestParam.limit"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            :total="roleList.length"
+            :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
         />
@@ -95,6 +95,7 @@ const formInline = reactive({
 const loading = ref(true)
 let roleList = ref([])
 let currentPage = ref(1)
+let total = ref(0)
 let roleListRequestParam = {
   id: null,
   codes: null,
@@ -120,7 +121,6 @@ const formatDate = (row, column, cellValue, index) => {
  * 提交查询
  */
 const onSubmit = () => {
-  console.log('submit!', formInline)
   loading.value = true
   let query: string = formInline.query_key;
   roleListRequestParam.enabled = true;
@@ -213,6 +213,8 @@ const switchRoleStatus = (key: string, enabled: boolean) => {
  */
 const handleSizeChange = (pageSize: number) => {
   roleListRequestParam.limit = pageSize;
+  roleListRequestParam.offset = 0
+  currentPage.value = 1
   loadRoleList()
 }
 
@@ -221,8 +223,9 @@ const handleSizeChange = (pageSize: number) => {
  * @param val
  */
 const handleCurrentChange = (pageNo: number) => {
-  currentPage.value = pageNo - 1
+  roleListRequestParam.offset = (pageNo - 1) * roleListRequestParam.limit
   loadRoleList()
+  currentPage.value = pageNo
 }
 
 /**
@@ -232,6 +235,7 @@ const loadRoleList = () => {
   loading.value = true
   roleClient.list(roleListRequestParam).then((resp) => {
     const list = resp.list
+    total.value = resp.total
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].enabled
     }

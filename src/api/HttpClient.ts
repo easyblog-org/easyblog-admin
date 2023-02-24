@@ -61,11 +61,19 @@ export class RolesClient extends Client {
     }
 
     /**
-     * 查询角色列表
+     * 查询角色列表（分页）
      * @param params
      */
     list(params: any): Promise<any> {
         return this.request.get('/v1/in/roles/list', params)
+    }
+
+    /**
+     * 查询角色列表（有效的全量数据）
+     * @param params
+     */
+    listAll(params: any): Promise<any> {
+        return this.request.get('/v1/in/roles/all', params)
     }
 
     /**
