@@ -60,7 +60,7 @@ const dialogVisible = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const title = ref('新增用户')
 const emits = defineEmits<{
-  (event: 'loadUserList'): void
+  (event: 'refresh'): void
 }>();
 
 const rules = reactive<FormRules>({
@@ -90,8 +90,6 @@ function close() {
     else if (key === 'roles') ruleForm[key] = []
     else ruleForm[key] = null
   })
-  //刷新父页面数据
-  emits('loadUserList')
 }
 
 const show = (item = {}) => {
@@ -139,6 +137,9 @@ const updateUserAccount = () => {
       message: '更新成功',
       type: 'success',
     })
+
+    //刷新父页面数据
+    emits('refresh')
   }).catch(() => {
     ElMessage({
       message: '更新失败',
@@ -163,6 +164,9 @@ const createUserAccount = () => {
       message: '创建成功',
       type: 'success',
     })
+
+    //刷新父页面数据
+    emits('refresh')
   }).catch(() => {
     ElMessage({
       message: '创建失败',
@@ -176,7 +180,7 @@ const createUserAccount = () => {
  * @param done
  */
 const handleSubmit = async (done: () => void) => {
-  await ruleFormRef.value.validate((valid, fields) => {
+  await ruleFormRef.value.validate(async (valid, fields) => {
     if (valid) {
       if (isEdit.value) {
         //编辑用户信息

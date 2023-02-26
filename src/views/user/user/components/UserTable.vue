@@ -2,8 +2,18 @@
   <div class="m-user-table">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="formInline.username" placeholder="请输入用户名"/>
+        <el-form-item>
+          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
+                    @keydown.enter="onSubmit">
+            <template #prepend>
+              <el-select v-model="formInline.query_key" placeholder="用户名" style="width: 120px"
+                         @change="handleQueryKeyChange">
+                <el-option label="用户名" value="nickname"/>
+                <el-option label="用户code" value="code"/>
+                <el-option label="用户状态" value="status"/>
+              </el-select>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" :icon="Search">查询</el-button>
@@ -82,7 +92,7 @@
       </div>
     </div>
 
-    <UserDialog ref="userDialog"/>
+    <UserDialog @refresh="loadUserList" ref="userDialog"/>
     <AccountDetailsDrawer ref="accountDialog"/>
   </div>
 </template>
@@ -98,34 +108,59 @@ const dialogVisible = ref(false)
 const userDialog = ref()
 const accountDialog = ref()
 const ruleFormRef = ref<FormInstance>()
-const formInline = reactive({})
+const formInline = reactive({
+  query_key: 'nickname',
+  query_value: null
+})
 const loading = ref(true)
 const userList = ref([])
 const currentPage = ref(1)
 const total = ref(0)
 const userListRequestParam = {
   ids: null,
+  codes: null,
   status: null,
   level: null,
-  nick_name: null,
+  nickname: null,
   sections: null,
   limit: 10,
   offset: 0,
 }
 
 const onSubmit = () => {
-  console.log('submit!', formInline)
+  if (formInline.query_key === 'status') {
+    userListRequestParam.status = formInline.query_value ? 1 : 0
+  } else if (formInline.query_key === 'nickname') {
+    userListRequestParam.nickname = formInline.query_value
+  } else if (formInline.query_key === 'code') {
+    userListRequestParam.codes = formInline.query_value
+  }
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  loadUserList()
+}
+
+/**
+ * 处理查询主键变更时间
+ */
+const handleQueryKeyChange = (val: string) => {
+  if (formInline.query_key === 'status') {
+    userListRequestParam.nickname = null
+    userListRequestParam.codes = null
+  } else if (formInline.query_key === 'nickname') {
+    userListRequestParam.status = null
+    userListRequestParam.codes = null
+  } else if (formInline.query_key === 'code') {
+    userListRequestParam.nickname = null
+    userListRequestParam.status = null
+  }
 }
 
 const reset = (formEl: FormInstance | undefined) => {
+  userListRequestParam.nickname = null
+  userListRequestParam.status = null
+  userListRequestParam.codes = null
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  loadUserList()
 }
 
 const addHandler = () => {
@@ -224,7 +259,7 @@ const handleCurrentChange = (pageNo: number) => {
 const loadUserList = () => {
   loading.value = true
   userListRequestParam.sections = 'accounts,roles'
-  userClient.list(userListRequestParam).then((resp) => {
+  return userClient.list(userListRequestParam).then((resp) => {
     const list = resp.data
     total.value = resp.total
     for (let i = 0; i < list.length; i++) {

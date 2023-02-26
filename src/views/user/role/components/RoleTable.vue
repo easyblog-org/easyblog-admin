@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <RoleDialog ref="roleDialog"/>
+    <RoleDialog @refresh="loadRoleList" ref="roleDialog"/>
   </div>
 </template>
 <script lang="ts" setup>
