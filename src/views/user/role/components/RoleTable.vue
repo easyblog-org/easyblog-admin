@@ -3,8 +3,8 @@
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
         <el-form-item>
-          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
-                    @keydown.enter="onSubmit">
+          <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
+                    @keydown.enter="onSearch" @change="handleQueryKeyChange">
             <template #prepend>
               <el-select v-model="formInline.query_key" placeholder="角色名称" style="width: 120px">
                 <el-option label="角色名称" value="name"/>
@@ -14,7 +14,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" :icon="Search">查询</el-button>
+          <el-button type="primary" @click="onSearch" :icon="Search">查询</el-button>
           <el-button @click="reset(ruleFormRef)">重置</el-button>
         </el-form-item>
       </el-form>
@@ -120,8 +120,7 @@ const formatDate = (row, column, cellValue, index) => {
 /**
  * 提交查询
  */
-const onSubmit = () => {
-  loading.value = true
+const onSearch = () => {
   let query: string = formInline.query_key;
   roleListRequestParam.enabled = true;
   if (query === 'name') {
@@ -130,20 +129,30 @@ const onSubmit = () => {
     roleListRequestParam.codes = formInline.query_value;
   }
   loadRoleList()
-  loading.value = false
-  roleListRequestParam.name = null;
-  roleListRequestParam.codes = null;
 }
 
+/**
+ * 重置查询
+ * @param formEl
+ */
 const reset = (formEl: FormInstance | undefined) => {
-  loading.value = true
   roleListRequestParam.enabled = null;
   roleListRequestParam.name = null;
   roleListRequestParam.codes = null;
   formInline.query_value = null
   formInline.query_key = 'name'
   loadRoleList()
-  loading.value = false
+}
+
+/**
+ * 处理查询主键变更事件
+ */
+const handleQueryKeyChange = (val: string) => {
+  if (formInline.query_key === 'name') {
+    roleListRequestParam.codes = null;
+  } else if (formInline.query_key === 'code') {
+    roleListRequestParam.name = null;
+  }
 }
 
 const addHandler = () => {

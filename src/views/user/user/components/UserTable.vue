@@ -3,7 +3,7 @@
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
         <el-form-item>
-          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
+          <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
                     @keydown.enter="onSearch">
             <template #prepend>
               <el-select v-model="formInline.query_key" placeholder="用户名" style="width: 120px"

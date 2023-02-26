@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: row;
 }
+
+.el-input__inner,.el-select-dropdown__item {
+  text-align: center;
+}
+
 .m-user-table{
   display: flex;
   flex-direction: column;

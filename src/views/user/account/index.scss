@@ -7,6 +7,10 @@
   box-shadow: 0 0 12px rgb(0 0 0 / 5%);
 }
 
+.el-input__inner,.el-select-dropdown__item {
+  text-align: center;
+}
+
 .account-table-body {
   flex: 1;
   display: flex;

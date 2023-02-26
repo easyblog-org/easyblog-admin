@@ -2,18 +2,20 @@
   <div class="app-container">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
-                  @keydown.enter="onSearch">
-          <template #prepend>
-            <el-select v-model="formInline.query_key" placeholder="账号类型" style="width: 120px"
-                       @change="handleQueryKeyChange">
-              <el-option label="账号类型" value="identity_type"/>
-              <el-option label="账号" value="identifier"/>
-              <el-option label="账号验证状态" value="verified"/>
-              <el-option label="账号状态" value="status"/>
-            </el-select>
-          </template>
-        </el-input>
+        <el-form-item>
+          <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
+                    @keydown.enter="onSearch">
+            <template #prepend>
+              <el-select v-model="formInline.query_key" placeholder="账号类型" style="width: 128px"
+                         @change="handleQueryKeyChange">
+                <el-option label="账号类型" value="identity_type"/>
+                <el-option label="账号" value="identifier"/>
+                <el-option label="账号验证状态" value="verified"/>
+                <el-option label="账号状态" value="status"/>
+              </el-select>
+            </template>
+          </el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSearch" :icon="Search">查询</el-button>
           <el-button @click="reset(ruleFormRef)">重置</el-button>
@@ -38,7 +40,6 @@
             </template>
           </el-table-column>
           <el-table-column prop="identifier" label="账号" align="center" width="180"/>
-          <el-table-column prop="credential" label="密码" align="center" width="180"/>
           <el-table-column prop="user_id" label="关联用户" align="center" width="180">
             <template #default="scope">
               <el-button type="primary" text @click="showUser(scope.row.user_id)">
