@@ -51,7 +51,6 @@ function close() {
 
 const show = (accounts = []) => {
   title.value = '账户详情'
-  console.log(accounts)
   accountList.value = accounts
   dialogVisible.value = true
 }

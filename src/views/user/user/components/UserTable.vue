@@ -223,9 +223,9 @@ const handleCurrentChange = (pageNo: number) => {
  */
 const loadUserList = () => {
   loading.value = true
-  userListRequestParam.sections = 'accounts,role'
+  userListRequestParam.sections = 'accounts,roles'
   userClient.list(userListRequestParam).then((resp) => {
-    const list = resp.list
+    const list = resp.data
     total.value = resp.total
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].active === 1

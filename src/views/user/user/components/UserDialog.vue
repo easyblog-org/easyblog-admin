@@ -13,7 +13,7 @@
         >
           <el-option
               v-for="item in roleList"
-              :key="item.id"
+              :key="item.code"
               :label="item.name"
               :value="item.code"
           />
@@ -28,6 +28,7 @@
             placeholder='请输入账户密码,如果不输入默认 admin123456'
             type="password"
             clearable
+            show-password
         />
       </el-form-item>
       <el-form-item label="用户状态" prop="status">
@@ -50,7 +51,7 @@
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance, FormRules} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
-import {accountClient, roleClient, userClient} from "@/api";
+import {roleClient, userClient} from "@/api";
 import {validatorMethod, verifyEmail} from "@/utils/validate";
 
 let roleList = ref([])
@@ -58,6 +59,9 @@ const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const title = ref('新增用户')
+const emits = defineEmits<{
+  (event: 'loadUserList'): void
+}>();
 
 const rules = reactive<FormRules>({
   nick_name: [
@@ -73,7 +77,7 @@ const rules = reactive<FormRules>({
 const ruleForm = reactive({
   nick_name: null,
   code: null,
-  roles: null,
+  roles: [],
   email: null,
   password: null,
   status: true,
@@ -83,8 +87,11 @@ function close() {
   ruleFormRef.value.resetFields()
   Object.keys(ruleForm).forEach((key) => {
     if (key === 'active') ruleForm[key] = true
+    else if (key === 'roles') ruleForm[key] = []
     else ruleForm[key] = null
   })
+  //刷新父页面数据
+  emits('loadUserList')
 }
 
 const show = (item = {}) => {
@@ -94,7 +101,23 @@ const show = (item = {}) => {
     title.value = '编辑用户'
     isEdit.value = true
     Object.keys(item).forEach((key) => {
-      ruleForm[key] = item[key]
+      if (key === 'accounts') {
+        const accounts = item['accounts']
+        if (accounts !== undefined && accounts !== null) {
+          const account = accounts.filter(function (account) {
+            return account.identity_type === 1
+          })
+          ruleForm['email'] = account[0].identifier
+          ruleForm['password'] = account[0].credential
+        }
+      } else if (key === 'roles') {
+        const roles = item[key]
+        roles.forEach(function (role) {
+          ruleForm['roles'].push(role.code)
+        })
+      } else {
+        ruleForm[key] = item[key]
+      }
     })
   }
   dialogVisible.value = true
@@ -103,24 +126,19 @@ const show = (item = {}) => {
 /**
  * 更新用户和账户信息
  */
-const updateUserInfo = () => {
+const updateUserAccount = () => {
   userClient.update(ruleForm.code, {
-    username: ruleForm.nick_name,
+    nick_name: ruleForm.nick_name,
     roles: ruleForm.roles,
     email: ruleForm.email,
     password: ruleForm.password,
-    active: ruleForm.status ? 1 : 0,
-  }).then((resp) => {
-    // 更新Account
-    if ((ruleForm.email !== undefined && ruleForm.email != null) ||
-        ruleForm.password !== undefined && ruleForm.password != null) {
-      accountClient.updateByIdentityType(resp.data, 1, ruleForm.email, ruleForm.password).then(() => {
-        ElMessage({
-          message: '更新成功',
-          type: 'success',
-        })
-      })
-    }
+    identity_type: 1,   //email 类型
+    active: ruleForm.status === null ? null : (ruleForm.status ? 1 : 0),
+  }).then(() => {
+    ElMessage({
+      message: '更新成功',
+      type: 'success',
+    })
   }).catch(() => {
     ElMessage({
       message: '更新失败',
@@ -132,23 +150,18 @@ const updateUserInfo = () => {
 /**
  * 创建User和账户
  */
-const createUserAndAccount = () => {
+const createUserAccount = () => {
   userClient.create({
     nick_name: ruleForm.nick_name,
     roles: ruleForm.roles,
     active: ruleForm.status ? 1 : 0,
-  }).then((resp) => {
-    console.log(ruleForm)
-    accountClient.create({
-      user_id: resp.id,
-      identity_type: 1,   //email 类型
-      identifier: ruleForm.email,
-      credential: ruleForm.password != null ? ruleForm.password : 'admin123456'
-    }).then(() => {
-      ElMessage({
-        message: '创建成功',
-        type: 'success',
-      })
+    identity_type: 1,   //email 类型
+    email: ruleForm.email,
+    password: ruleForm.password != null ? ruleForm.password : 'admin123456'
+  }).then(() => {
+    ElMessage({
+      message: '创建成功',
+      type: 'success',
     })
   }).catch(() => {
     ElMessage({
@@ -167,11 +180,10 @@ const handleSubmit = async (done: () => void) => {
     if (valid) {
       if (isEdit.value) {
         //编辑用户信息
-        updateUserInfo()
+        updateUserAccount()
       } else {
         //创建新用户
-        console.log("Create User.......")
-        createUserAndAccount()
+        createUserAccount()
       }
       dialogVisible.value = false
     }

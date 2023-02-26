@@ -18,7 +18,7 @@ export class UserClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/in/user', params)
+        return this.request.get('/v1/user', params)
     }
 
     /**
@@ -26,7 +26,7 @@ export class UserClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/in/user/list', params)
+        return this.request.get('/v1/user/list', params)
     }
 
     /**
@@ -34,7 +34,7 @@ export class UserClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/in/user', params)
+        return this.request.post('/v1/user', params)
     }
 
     /**
@@ -43,7 +43,7 @@ export class UserClient extends Client {
      * @param params
      */
     update(code: string, params: any): Promise<any> {
-        return this.request.put('/v1/in/user/' + code, params)
+        return this.request.put('/v1/user/' + code, params)
     }
 }
 
@@ -57,7 +57,7 @@ export class RolesClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/in/roles', params)
+        return this.request.get('/v1/roles', params)
     }
 
     /**
@@ -65,7 +65,7 @@ export class RolesClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/in/roles/list', params)
+        return this.request.get('/v1/roles/list', params)
     }
 
     /**
@@ -73,7 +73,7 @@ export class RolesClient extends Client {
      * @param params
      */
     listAll(params: any): Promise<any> {
-        return this.request.get('/v1/in/roles/all', params)
+        return this.request.get('/v1/roles/all', params)
     }
 
     /**
@@ -81,7 +81,7 @@ export class RolesClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/in/roles', params)
+        return this.request.post('/v1/roles', params)
     }
 
     /**
@@ -90,7 +90,7 @@ export class RolesClient extends Client {
      * @param params
      */
     update(code: string, params: any): Promise<any> {
-        return this.request.put('/v1/in/roles/' + code, params)
+        return this.request.put('/v1/roles/' + code, params)
     }
 }
 
@@ -104,7 +104,7 @@ export class AccountClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/in/account', params)
+        return this.request.get('/v1/account', params)
     }
 
     /**
@@ -112,7 +112,7 @@ export class AccountClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/in/account/list', params)
+        return this.request.get('/v1/account/list', params)
     }
 
     /**
@@ -120,7 +120,7 @@ export class AccountClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/in/account', params)
+        return this.request.post('/v1/account', params)
     }
 
     /**
@@ -129,7 +129,7 @@ export class AccountClient extends Client {
      * @param params
      */
     update(accountId: string, params: any): Promise<any> {
-        return this.request.put('/v1/in/account/' + accountId, params)
+        return this.request.put('/v1/account/' + accountId, params)
     }
 
     /**
@@ -140,7 +140,7 @@ export class AccountClient extends Client {
      * @param credential    密码
      */
     updateByIdentityType(userId: number, identityType: number, identifier?: string, credential?: string) {
-        return this.request.put('/v1/in/account/' + userId + '/' + identityType, {
+        return this.request.put('/v1/account/' + userId + '/' + identityType, {
             identifier: identifier,
             credential: credential
         })

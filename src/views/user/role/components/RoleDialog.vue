@@ -62,6 +62,8 @@ function close() {
     if (key === 'enabled') ruleForm[key] = true
     else ruleForm[key] = null
   })
+  //刷新父页面数据
+  emits('loadRoleList')
 }
 
 const show = (item = {}) => {
@@ -102,9 +104,6 @@ const handleClose = async (done: () => void) => {
           type: 'success',
         })
       }
-
-      //刷新父页面数据
-      emits('loadRoleList')
       dialogVisible.value = false
     } else {
       ElMessage({

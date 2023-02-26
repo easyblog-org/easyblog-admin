@@ -234,7 +234,7 @@ const handleCurrentChange = (pageNo: number) => {
 const loadRoleList = () => {
   loading.value = true
   roleClient.list(roleListRequestParam).then((resp) => {
-    const list = resp.list
+    const list = resp.data
     total.value = resp.total
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].enabled
