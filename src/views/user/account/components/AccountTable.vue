@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item>
+        <el-form-item class="search-bar">
           <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
                     @keydown.enter="onSearch">
             <template #prepend>
@@ -86,7 +86,7 @@
         />
       </div>
     </div>
-    <RoleDrawer ref="roleDrawer"/>
+    <AccountDialog @refresh="loadAccountList" ref="accountDialog"/>
     <UserDetail ref="userDetailDrawer"></UserDetail>
   </div>
 </template>
@@ -95,17 +95,16 @@
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
 import {Search} from '@element-plus/icons-vue'
-import RoleDrawer from './RoleDrawer.vue'
-import DetailsDrawer from "./AccountDetail.vue";
 import {accountClient} from "@/api";
 import UserDetail from "@/views/user/user/components/UserDetail.vue";
+import AccountDialog from "@/views/user/account/components/AccountDialog.vue";
 
 const accountList = ref([])
 let currentPage = ref(1)
 let total = ref(0)
 
 const loading = ref(true)
-const roleDrawer = ref()
+const accountDialog = ref()
 const userDetailDrawer = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({
@@ -202,35 +201,44 @@ const showUser = (user_id: number) => {
   userDetailDrawer.value.show(user_id)
 }
 
+/**
+ * 编辑Account
+ * @param row
+ */
+const edit = (row) => {
+  accountDialog.value.show(row)
+}
+
+/**
+ * 删除Account
+ * @param row
+ */
 const del = (row) => {
-  ElMessageBox.confirm('你确定要删除当前项吗?', '温馨提示', {
+  if(row.status===0){
+    ElMessage({
+      message: '账户' + row.identifier + '已经被删除！',
+      type: 'warning',
+    })
+    return
+  }
+  ElMessageBox.confirm('你确定要删除账户' + row.identifier + '吗?', '温馨提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
     draggable: true,
+  }).then(() => {
+    accountClient.update(row.id, {
+      status: 0,
+    }).then(() => {
+      ElMessage({
+        message: '更新成功',
+        type: 'success',
+      })
+      loadAccountList()
+    })
   })
-      .then(() => {
-      })
-      .catch(() => {
-      })
 }
 
-const changeStatus = (row) => {
-  ElMessageBox.confirm(
-      `确定要${!row.status ? '禁用' : '启用'} ${row.roleName} 角色吗？`,
-      '温馨提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      },
-  )
-      .then(async () => {
-      })
-      .catch(() => {
-        row.status = !row.status
-      })
-}
 
 /**
  * 加载Account列表
@@ -254,8 +262,6 @@ const loadAccountList = () => {
 onMounted(() => {
   loadAccountList();
 })
-
-
 </script>
 
 <style scoped lang="scss">

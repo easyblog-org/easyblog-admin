@@ -3,7 +3,13 @@
   flex-direction: row;
 }
 
-.el-input__inner,.el-select-dropdown__item {
+.search-bar {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+.el-select-dropdown__item {
   text-align: center;
 }
 

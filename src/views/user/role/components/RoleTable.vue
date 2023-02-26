@@ -2,7 +2,7 @@
   <div class="m-user-table">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item>
+        <el-form-item class="search-bar">
           <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
                     @keydown.enter="onSearch" @change="handleQueryKeyChange">
             <template #prepend>

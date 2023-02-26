@@ -49,12 +49,12 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import {ElMessageBox, ElMessage, FormInstance, FormRules} from 'element-plus'
+import {ElMessage, FormInstance, FormRules} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
 import {roleClient, userClient} from "@/api";
 import {validatorMethod, verifyEmail} from "@/utils/validate";
 
-let roleList = ref([])
+const roleList = ref([])
 const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref<boolean>(false)
 const isEdit = ref<boolean>(false)

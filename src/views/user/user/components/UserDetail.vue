@@ -104,7 +104,7 @@ import {userClient} from "@/api";
 const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref(false)
 const title = ref('用户详情')
-let userDetail = ref({});
+const userDetail = ref({});
 const loading = ref(true)
 
 
