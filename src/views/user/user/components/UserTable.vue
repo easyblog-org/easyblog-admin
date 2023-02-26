@@ -2,8 +2,18 @@
   <div class="m-user-table">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="formInline.username" placeholder="请输入用户名"/>
+        <el-form-item>
+          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
+                    @keydown.enter="onSubmit">
+            <template #prepend>
+              <el-select v-model="formInline.query_key" placeholder="用户名" style="width: 120px"
+                         @change="handleQueryKeyChange">
+                <el-option label="用户名" value="nickname"/>
+                <el-option label="用户code" value="code"/>
+                <el-option label="用户状态" value="status"/>
+              </el-select>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" :icon="Search">查询</el-button>
@@ -24,7 +34,21 @@
         <el-table v-loading="loading" :data="userList" style="width: 100%; height: 100%" border>
           <el-table-column prop="code" label="用户Code" align="center" width="100"/>
           <el-table-column prop="nick_name" label="昵称" align="center" width="120"/>
-          <el-table-column prop="role.name" label="角色" align="center" width="120"/>
+          <el-table-column prop="role.name" label="角色" align="center" width="120">
+            <template #default="scope">
+              <el-tag v-for="(value,index) in scope.row.roles" :key="value.id" class="mx-1"
+                      :class="index!==scope.row.roles.length-1?'m-tag-gap':''" size="default">
+                {{ value.name }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="accounts" label="账号" align="center" width="120">
+            <template #default="scope">
+              <el-button type="primary" text @click="showAccount(scope.row.accounts)">
+                查看
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="integration" label="积分" align="center"/>
           <el-table-column prop="level" label="等级" align="center" width="120"/>
           <el-table-column prop="visit" label="文章访问量" align="center" width="120"/>
@@ -57,18 +81,19 @@
       </div>
       <div class="pagination">
         <el-pagination
-            v-model:currentPage="currentPage"
+            :currentPage="currentPage"
             :page-size="userListRequestParam.limit"
             background
             layout="total, sizes, prev, pager, next, jumper"
-            :total="userList.length"
+            :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
         />
       </div>
     </div>
 
-    <UserDialog ref="userDialog"/>
+    <UserDialog @refresh="loadUserList" ref="userDialog"/>
+    <AccountDetailsDrawer ref="accountDialog"/>
   </div>
 </template>
 <script lang="ts" setup>
@@ -77,37 +102,65 @@ import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
 import UserDialog from './UserDialog.vue'
 import {userClient} from '@/api'
+import AccountDetailsDrawer from "@/views/user/account/components/AccountDetailsDrawer.vue";
 
 const dialogVisible = ref(false)
 const userDialog = ref()
+const accountDialog = ref()
 const ruleFormRef = ref<FormInstance>()
-const formInline = reactive({})
+const formInline = reactive({
+  query_key: 'nickname',
+  query_value: null
+})
 const loading = ref(true)
-let userList = ref([])
-let currentPage = ref(1)
-let userListRequestParam = {
+const userList = ref([])
+const currentPage = ref(1)
+const total = ref(0)
+const userListRequestParam = {
   ids: null,
+  codes: null,
   status: null,
   level: null,
-  nick_name: null,
+  nickname: null,
   sections: null,
   limit: 10,
-  offset: currentPage.value - 1,
+  offset: 0,
 }
 
 const onSubmit = () => {
-  console.log('submit!', formInline)
+  if (formInline.query_key === 'status') {
+    userListRequestParam.status = formInline.query_value ? 1 : 0
+  } else if (formInline.query_key === 'nickname') {
+    userListRequestParam.nickname = formInline.query_value
+  } else if (formInline.query_key === 'code') {
+    userListRequestParam.codes = formInline.query_value
+  }
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  loadUserList()
+}
+
+/**
+ * 处理查询主键变更时间
+ */
+const handleQueryKeyChange = (val: string) => {
+  if (formInline.query_key === 'status') {
+    userListRequestParam.nickname = null
+    userListRequestParam.codes = null
+  } else if (formInline.query_key === 'nickname') {
+    userListRequestParam.status = null
+    userListRequestParam.codes = null
+  } else if (formInline.query_key === 'code') {
+    userListRequestParam.nickname = null
+    userListRequestParam.status = null
+  }
 }
 
 const reset = (formEl: FormInstance | undefined) => {
+  userListRequestParam.nickname = null
+  userListRequestParam.status = null
+  userListRequestParam.codes = null
   loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
+  loadUserList()
 }
 
 const addHandler = () => {
@@ -117,20 +170,53 @@ const editHandler = (row) => {
   userDialog.value.show(row)
 }
 
+/**
+ * 展示账户详情页
+ */
+const showAccount = (accounts: any[]) => {
+  accountDialog.value.show(accounts)
+}
+
+/**
+ * 更新用户状态
+ */
+const switchUserStatus = (key: string, enabled: number) => {
+  //编辑用户信息
+  userClient.update(key, {
+    active: enabled,
+  }).then(() => {
+    ElMessage({
+      message: '更新成功',
+      type: 'success',
+    })
+  }).catch(() => {
+    ElMessage({
+      message: '更新失败',
+      type: 'error',
+    })
+  })
+}
+
+/**
+ * 删除用户
+ * @param row
+ */
 const del = (row) => {
   ElMessageBox.confirm('你确定要删除当前项吗?', '温馨提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
     draggable: true,
+  }).then(() => {
+    switchUserStatus(row['code'], 0)
   })
-      .then(() => {
-      })
-      .catch(() => {
-      })
 }
+
+/**
+ * 更新用户激活状态
+ * @param row
+ */
 const changeStatus = (row) => {
-  console.log(row)
   ElMessageBox.confirm(
       `确定要${!row.status ? '禁用' : '启用'}用户${row.nick_name}的账户吗？`,
       '温馨提示',
@@ -140,19 +226,31 @@ const changeStatus = (row) => {
         type: 'warning',
       },
   ).then(async () => {
-
+    switchUserStatus(row['code'], row.status ? 1 : 0)
   }).catch(() => {
-        row.status = !row.status
+    row.status = !row.status
   })
 }
 
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+/**
+ * 分页大小变化
+ * @param pageSize
+ */
+const handleSizeChange = (pageSize: number) => {
+  userListRequestParam.limit = pageSize;
+  userListRequestParam.offset = 0
+  currentPage.value = 1
+  loadUserList()
 }
 
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val - 1
+/**
+ * 翻页
+ * @param pageNo
+ */
+const handleCurrentChange = (pageNo: number) => {
+  userListRequestParam.offset = (pageNo - 1) * userListRequestParam.limit
   loadUserList()
+  currentPage.value = pageNo
 }
 
 /**
@@ -160,13 +258,15 @@ const handleCurrentChange = (val: number) => {
  */
 const loadUserList = () => {
   loading.value = true
-  userListRequestParam.sections='accounts,account'
-  userClient.list(userListRequestParam).then((resp) => {
-    const list = resp.list
+  userListRequestParam.sections = 'accounts,roles'
+  return userClient.list(userListRequestParam).then((resp) => {
+    const list = resp.data
+    total.value = resp.total
     for (let i = 0; i < list.length; i++) {
       list[i].status = list[i].active === 1
     }
     userList.value = list
+    console.log(list)
   }).finally(() => {
     loading.value = false
   })

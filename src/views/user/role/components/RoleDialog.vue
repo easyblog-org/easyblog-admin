@@ -37,7 +37,7 @@ const dialogVisible = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const title = ref('新增角色')
 const emits = defineEmits<{
-  (event: 'loadRoleList'): void
+  (event: 'refresh'): void
 }>();
 
 const rules = reactive({
@@ -90,6 +90,10 @@ const handleClose = async (done: () => void) => {
           message: '更新成功',
           type: 'success',
         })
+
+        dialogVisible.value = false
+        //刷新父页面数据
+        emits('refresh')
       } else {
         roleClient.create({
           name: ruleForm.name,
@@ -101,11 +105,11 @@ const handleClose = async (done: () => void) => {
           message: '创建成功',
           type: 'success',
         })
-      }
 
-      //刷新父页面数据
-      emits('loadRoleList')
-      dialogVisible.value = false
+        dialogVisible.value = false
+        //刷新父页面数据
+        emits('refresh')
+      }
     } else {
       ElMessage({
         message: '校验未通过',

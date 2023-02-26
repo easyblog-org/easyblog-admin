@@ -74,8 +74,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         '/api': {
           target:
             process.env.NODE_ENV === 'production'
-              ? 'https://zeus.easyblog.top'
-              : 'http://localhost:8001',
+              ? 'https://khaos.easyblog.top'
+              : 'http://localhost:8888',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
