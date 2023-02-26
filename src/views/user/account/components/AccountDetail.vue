@@ -16,14 +16,14 @@
       <el-table-column prop="credential" label="密码"/>
       <el-table-column prop="verified" label="账号已验证">
         <template #default="scope">
-          <el-tag v-if="scope.row.verified===1" class="mx-1" size="default" type="success" >true</el-tag>
-          <el-tag v-if="scope.row.verified===0" class="mx-1" size="default" type="danger" >false</el-tag>
+          <el-tag v-if="scope.row.verified===1" class="mx-1" size="default" type="success" >已验证</el-tag>
+          <el-tag v-if="scope.row.verified===0" class="mx-1" size="default" type="danger" >未验证</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="status" label="账号状态">
         <template #default="scope">
-          <el-tag v-if="scope.row.status===1" class="mx-1" size="default" type="success" >true</el-tag>
-          <el-tag v-if="scope.row.status===0" class="mx-1" size="default" type="danger" >false</el-tag>
+          <el-tag v-if="scope.row.status===1" class="mx-1" size="default" type="success" >已激活</el-tag>
+          <el-tag v-if="scope.row.status===0" class="mx-1" size="default" type="danger" >未激活</el-tag>
         </template>
       </el-table-column>
     </el-table>

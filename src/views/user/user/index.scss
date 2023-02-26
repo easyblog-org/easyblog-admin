@@ -103,3 +103,46 @@
 .m-tag-gap{
   margin-bottom: 10px;
 }
+
+.user-detail-drawer{
+  .header{
+    position: relative;
+    padding-left: 10px;
+    color: #000;
+    background: #fff;
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  .el-drawer__header{
+    margin-bottom: 0;
+  }
+
+  .user-detail-body {
+    .el-row {
+      width: 100%;
+      padding: 15px 10px;
+    }
+
+    .title {
+      flex: 0 0 auto;
+      width: 80px;
+      margin-right: 20px;
+      font-size: 14px;
+      color: #8c8c8c;
+      text-align: justify;
+    }
+
+    .content {
+      color: #333;
+      font-size: 14px;
+      word-wrap: break-word;
+      word-break: break-all;
+      white-space: normal;
+    }
+
+    .m-tag-gap{
+      margin-right: 5px;
+    }
+  }
+}
