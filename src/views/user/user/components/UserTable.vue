@@ -2,9 +2,9 @@
   <div class="m-user-table">
     <div class="header">
       <el-form :inline="true" :model="formInline" ref="ruleFormRef">
-        <el-form-item>
-          <el-input v-model="formInline.query_value" placeholder="Please input" class="input-with-select"
-                    @keydown.enter="onSubmit">
+        <el-form-item class="search-bar">
+          <el-input v-model="formInline.query_value" placeholder="请输入" class="input-with-select"
+                    @keydown.enter="onSearch">
             <template #prepend>
               <el-select v-model="formInline.query_key" placeholder="用户名" style="width: 120px"
                          @change="handleQueryKeyChange">
@@ -16,7 +16,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" :icon="Search">查询</el-button>
+          <el-button type="primary" @click="onSearch" :icon="Search">查询</el-button>
           <el-button @click="reset(ruleFormRef)">重置</el-button>
         </el-form-item>
       </el-form>
@@ -102,7 +102,7 @@ import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
 import UserDialog from './UserDialog.vue'
 import {userClient} from '@/api'
-import AccountDetailsDrawer from "@/views/user/account/components/AccountDetailsDrawer.vue";
+import AccountDetailsDrawer from "@/views/user/account/components/AccountDetail.vue";
 
 const dialogVisible = ref(false)
 const userDialog = ref()
@@ -127,7 +127,7 @@ const userListRequestParam = {
   offset: 0,
 }
 
-const onSubmit = () => {
+const onSearch = () => {
   if (formInline.query_key === 'status') {
     userListRequestParam.status = formInline.query_value ? 1 : 0
   } else if (formInline.query_key === 'nickname') {
@@ -140,7 +140,7 @@ const onSubmit = () => {
 }
 
 /**
- * 处理查询主键变更时间
+ * 处理查询主键变更事件
  */
 const handleQueryKeyChange = (val: string) => {
   if (formInline.query_key === 'status') {

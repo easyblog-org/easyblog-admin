@@ -2,6 +2,17 @@
   display: flex;
   flex-direction: row;
 }
+
+.search-bar {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+.el-select-dropdown__item {
+  text-align: center;
+}
+
 .m-user-table{
   display: flex;
   flex-direction: column;

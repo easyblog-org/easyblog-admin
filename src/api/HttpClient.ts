@@ -146,3 +146,16 @@ export class AccountClient extends Client {
         })
     }
 }
+
+/**
+ * 静态常量Client
+ */
+export class StaticClient extends Client {
+    /**
+     * 加载所有账号类型
+     */
+    getAllIdentityType() {
+        return this.request.get('/v1/static/identity_types')
+    }
+
+}
