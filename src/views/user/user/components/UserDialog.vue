@@ -53,6 +53,7 @@ import {ElMessage, FormInstance, FormRules} from 'element-plus'
 import {onMounted, reactive, ref} from 'vue'
 import {roleClient, userClient} from "@/api";
 import {validatorMethod, verifyEmail} from "@/utils/validate";
+import {decrypt, encrypt} from "@/utils/crypto";
 
 const roleList = ref([])
 const ruleFormRef = ref<FormInstance>()
@@ -106,7 +107,7 @@ const show = (item = {}) => {
             return account.identity_type === 1
           })
           ruleForm['email'] = account[0].identifier
-          ruleForm['password'] = account[0].credential
+          ruleForm['password'] = decrypt(account[0].credential)
         }
       } else if (key === 'roles') {
         const roles = item[key]
@@ -129,7 +130,7 @@ const updateUserAccount = () => {
     nick_name: ruleForm.nick_name,
     roles: ruleForm.roles,
     email: ruleForm.email,
-    password: ruleForm.password,
+    password: encrypt(ruleForm.password),
     identity_type: 1,   //email 类型
     active: ruleForm.status === null ? null : (ruleForm.status ? 1 : 0),
   }).then(() => {
@@ -158,7 +159,7 @@ const createUserAccount = () => {
     active: ruleForm.status ? 1 : 0,
     identity_type: 1,   //email 类型
     email: ruleForm.email,
-    password: ruleForm.password != null ? ruleForm.password : 'admin123456'
+    password: ruleForm.password != null ? encrypt(ruleForm.password) : encrypt('admin123456')
   }).then(() => {
     ElMessage({
       message: '创建成功',

@@ -86,6 +86,7 @@ const show = (item = {}) => {
       ruleForm[key] = item[key]
     }
   })
+
   loadAllIdentityType()
   dialogVisible.value = true
 }

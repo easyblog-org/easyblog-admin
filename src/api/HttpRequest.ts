@@ -2,6 +2,7 @@ import axios, {AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse} fro
 import {ElMessage} from 'element-plus'
 import {useUserStore} from '@/store/modules/user'
 import {HttpConstants} from '@/api/HttpConstans'
+import routers from "@/routers";
 
 class HttpRequest {
     service: AxiosInstance
@@ -42,11 +43,19 @@ class HttpRequest {
             (response: AxiosResponse) => {
                 // 直接返回res，当然你也可以只返回res.data
                 // 系统如果有自定义code也可以在这里处理
-                if (!this.isSuccess(response)) {
-                    this.showErrMessage(response)
+                if (response.data.code === 'auth_token_not_found' ||
+                    response.data.code === 'auth_expired') {
+                    //可能是token过期，清除它
+                    const userStore = useUserStore()
+                    userStore.token = null;
+                    //跳转到登录页面
+                    routers.replace({
+                        path: '/login'
+                    });
+
                     return Promise.reject(response)
                 }
-                return response
+                return Promise.resolve(response)
             },
             (error: AxiosError) => {
                 return Promise.reject(error)
@@ -62,6 +71,9 @@ class HttpRequest {
      * duration 消息持续时间
      */
     showErrMessage(err, type: any = 'error', duration = 3000) {
+        if (undefined === err || null === err) {
+            return
+        }
         ElMessage({
             message: err.data.message,
             type: type,
@@ -94,7 +106,7 @@ class HttpRequest {
      * @param config
      */
     post(url: string,
-         params: any,
+         params?: any,
          config = {
              headers: {
                  'Content-Type': 'application/json'
@@ -102,9 +114,13 @@ class HttpRequest {
          }) {
         return new Promise((resolve, reject) => {
             this.service.post(url, params, config).then((res) => {
-                resolve(res.data.data)
+                resolve(res.data)
             }).catch((err) => {
-                reject(err.data.data)
+                if (undefined !== err && null !== err) {
+                    reject(err.data)
+                } else {
+                    reject(err)
+                }
             })
         })
     }
