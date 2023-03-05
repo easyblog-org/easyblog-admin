@@ -28,8 +28,8 @@ export const useUserStore = defineStore({
                 loginClient.login({
                     email: loginForm.username,
                     password: encrypt(loginForm.password),
-                    ip: decrypt(sessionStorage.getItem(decrypt("ip"))),
-                    location: decrypt(sessionStorage.getItem(decrypt("location"))),
+                    ip: decrypt(sessionStorage.getItem(encrypt("ip"))),
+                    location: decrypt(sessionStorage.getItem(encrypt("location"))),
                     device: userAgentObj.deviceName,
                     operation_system: userAgentObj.osName + ' ' + userAgentObj.osVersion
                 }).then((resp) => {
