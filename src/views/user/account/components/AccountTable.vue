@@ -59,6 +59,13 @@
               <el-tag v-if="scope.row.status===0" class="mx-1" size="default" type="danger">未激活</el-tag>
             </template>
           </el-table-column>
+          <el-table-column prop="login_log" label="登录日志" align="center" width="180">
+            <template #default="scope">
+              <el-button type="primary" text @click="showLogInLog(scope.row.user_id,scope.row.id)">
+                查看
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="create_time" label="创建时间" align="center" width="200"/>
           <el-table-column prop="update_time" label="更新时间" align="center" width="200"/>
           <el-table-column prop="status" label="操作" align="center" width="180">
@@ -88,6 +95,7 @@
     </div>
     <AccountDialog @refresh="loadAccountList" ref="accountDialog"/>
     <UserDetail ref="userDetailDrawer"></UserDetail>
+    <AccountLoginLogDrawer ref="accountLoginLogDrawer"/>
   </div>
 </template>
 
@@ -98,6 +106,7 @@ import {Search} from '@element-plus/icons-vue'
 import {accountClient} from "@/api";
 import UserDetail from "@/views/user/user/components/UserDetail.vue";
 import AccountDialog from "@/views/user/account/components/AccountDialog.vue";
+import AccountLoginLogDrawer from "@/views/user/account/components/AccountLoginLogDrawer.vue";
 
 const accountList = ref([])
 let currentPage = ref(1)
@@ -106,6 +115,7 @@ let total = ref(0)
 const loading = ref(true)
 const accountDialog = ref()
 const userDetailDrawer = ref()
+const accountLoginLogDrawer = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({
   query_key: 'identifier',
@@ -202,6 +212,15 @@ const showUser = (user_id: number) => {
 }
 
 /**
+ * 展示登录日志
+ * @param user_id
+ * @param account_id
+ */
+const showLogInLog = (user_id: number, account_id: number) => {
+  accountLoginLogDrawer.value.show(user_id, account_id)
+}
+
+/**
  * 编辑Account
  * @param row
  */
@@ -214,7 +233,7 @@ const edit = (row) => {
  * @param row
  */
 const del = (row) => {
-  if(row.status===0){
+  if (row.status === 0) {
     ElMessage({
       message: '账户' + row.identifier + '已经被删除！',
       type: 'warning',
@@ -246,6 +265,8 @@ const del = (row) => {
 const loadAccountList = () => {
   loading.value = true;
   accountClient.list(accountsQueryParams).then((resp) => {
+    if (undefined === resp || null === resp ||
+        undefined === resp.data || null === resp.data) return
     const list = resp.data
     total.value = resp.total
     accountList.value = list
