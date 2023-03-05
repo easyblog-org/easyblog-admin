@@ -1,10 +1,16 @@
 import HttpRequest from '@/api/HttpRequest'
+import MxnzpRequest from "@/api/MxnzpRequest";
+import OpenApiRequest from "@/api/OpenApiRequest";
 
 class Client {
     protected request: HttpRequest
+    protected mxnzpRequest: MxnzpRequest
+    protected openApiRequest: OpenApiRequest
 
     constructor() {
         this.request = new HttpRequest()
+        this.mxnzpRequest = new MxnzpRequest()
+        this.openApiRequest = new OpenApiRequest()
     }
 }
 
@@ -156,6 +162,51 @@ export class StaticClient extends Client {
      */
     getAllIdentityType() {
         return this.request.get('/v1/static/identity_types')
+    }
+
+}
+
+export class LoginClient extends Client {
+
+    /**
+     * Admin登录
+     * @param params
+     */
+    login(params: any) {
+        return this.request.post('/v1/auth/login', params)
+    }
+
+    /**
+     * Admin退出登录
+     * @param params
+     */
+    logout() {
+        return this.request.post('/v1/auth/logout')
+    }
+}
+
+
+export class MxnzpClient extends Client {
+
+    /**
+     * 获取客户端ip地址
+     */
+    getIpInfo() {
+        return this.mxnzpRequest.get('/api/ip/self?app_id=mabkjelflpmmiouq&app_secret=TzJHYkFDYmxDUXp5N1BrZXR4d2QwZz09')
+    }
+
+}
+
+export class OpenApiClient extends Client {
+
+    /**
+     * 根据客户端ip地址获取客户端物理地址
+     */
+    getIpLocation(ip: string) {
+        return this.openApiRequest.get('/ip/ipNewV3', {
+            ip: ip,
+            key: '79618bdd93337d909b3425e083f593c1'
+        })
     }
 
 }
