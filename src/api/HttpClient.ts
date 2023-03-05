@@ -183,6 +183,14 @@ export class LoginClient extends Client {
     logout() {
         return this.request.post('/v1/auth/logout')
     }
+
+    /**
+     * 修改密码
+     * @param params
+     */
+    modifyPassword(params: any) {
+        return this.request.post('/v1/auth/modify-pwd', params)
+    }
 }
 
 

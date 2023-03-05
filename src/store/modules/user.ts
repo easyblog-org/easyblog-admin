@@ -39,7 +39,7 @@ export const useUserStore = defineStore({
                         // @ts-ignore
                         this.token = encrypt(resp.data.token)
                         // @ts-ignore
-                        this.userInfo = encrypt(resp.data.user)
+                        this.userInfo = resp.data.user
                         resolve(resp)
                     } else {
                         // @ts-ignore
@@ -57,8 +57,12 @@ export const useUserStore = defineStore({
         logout() {
             return new Promise((resolve, reject) => {
                 loginClient.logout().then((resp) => {
-                    this.token = null
-                    this.userInfo = {}
+                    // @ts-ignore
+                    // 未报错 & 服务器返回成功
+                    if(resp.success && resp.data) {
+                        this.token = null
+                        this.userInfo = {}
+                    }
                     resolve(resp)
                 })
             })
