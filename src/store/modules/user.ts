@@ -3,6 +3,7 @@ import {loginClient} from "@/api";
 import {ElMessage, ElNotification} from "element-plus";
 import {decrypt, encrypt} from "@/utils/crypto";
 import ua2obj from 'ua2obj'
+import {ErrorCodeType} from "@/api/ErrorCodeType";
 
 export const useUserStore = defineStore({
     // id: 必须的，在所有 Store 中唯一
@@ -30,7 +31,7 @@ export const useUserStore = defineStore({
                     ip: decrypt(sessionStorage.getItem(decrypt("ip"))),
                     location: decrypt(sessionStorage.getItem(decrypt("location"))),
                     device: userAgentObj.deviceName,
-                    operation_system: userAgentObj.osName+' '+userAgentObj.osVersion
+                    operation_system: userAgentObj.osName + ' ' + userAgentObj.osVersion
                 }).then((resp) => {
                     console.log(resp)
                     // @ts-ignore
@@ -41,9 +42,10 @@ export const useUserStore = defineStore({
                         this.userInfo = encrypt(resp.data.user)
                         resolve(resp)
                     } else {
+                        // @ts-ignore
+                        const errorMsg = ErrorCodeType(resp.code);
                         ElMessage({
-                            // @ts-ignore
-                            message: resp.code,
+                            message: errorMsg,
                             type: 'warning',
                         })
                         reject(resp)
