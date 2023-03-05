@@ -172,7 +172,7 @@ export class LoginClient extends Client {
      * Admin登录
      * @param params
      */
-    login(params: any) {
+    login(params: any): Promise<any> {
         return this.request.post('/v1/auth/login', params)
     }
 
@@ -180,7 +180,7 @@ export class LoginClient extends Client {
      * Admin退出登录
      * @param params
      */
-    logout() {
+    logout(): Promise<any> {
         return this.request.post('/v1/auth/logout')
     }
 
@@ -191,15 +191,26 @@ export class LoginClient extends Client {
     modifyPassword(params: any) {
         return this.request.post('/v1/auth/modify-pwd', params)
     }
+
+    /**
+     * 查询登录日志
+     * @param params
+     */
+    loginLogs(params: any): Promise<any> {
+        return this.request.get('/v1/auth/logs', params)
+    }
 }
 
 
+/**=======================================================================================================
+ *  三方接口
+ *=======================================================================================================*/
 export class MxnzpClient extends Client {
 
     /**
      * 获取客户端ip地址
      */
-    getIpInfo() {
+    getIpInfo(): Promise<any> {
         return this.mxnzpRequest.get('/api/ip/self?app_id=mabkjelflpmmiouq&app_secret=TzJHYkFDYmxDUXp5N1BrZXR4d2QwZz09')
     }
 
@@ -210,7 +221,7 @@ export class OpenApiClient extends Client {
     /**
      * 根据客户端ip地址获取客户端物理地址
      */
-    getIpLocation(ip: string) {
+    getIpLocation(ip: string): Promise<any> {
         return this.openApiRequest.get('/ip/ipNewV3', {
             ip: ip,
             key: '79618bdd93337d909b3425e083f593c1'
