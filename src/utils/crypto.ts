@@ -40,6 +40,7 @@ export const encrypt: Function = (encryptData: string) => {
  * @memberof Utils
  */
 export const decrypt: Function = (encryptData: string) => {
+    if (undefined === encryptData || null == encryptData) return ''
     var key = CryptoJS.enc.Utf8.parse('as-Crypto-js')
     var decrypt = CryptoJS.AES.decrypt(encryptData, key, {
         mode: CryptoJS.mode.ECB,

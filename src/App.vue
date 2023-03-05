@@ -10,6 +10,7 @@ import {useSettingStore} from "@/store/modules/setting"
 // 配置element中文
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import {mxnzpClient, openApiClient} from "@/api";
+import {encrypt} from "@/utils/crypto";
 
 const SettingStore = useSettingStore()
 // 配置全局组件大小
@@ -17,7 +18,7 @@ const globalComSize = computed((): string => SettingStore.themeConfig.globalComS
 
 
 const queryClientIpAddr = () => {
-  if (sessionStorage.getItem('ip') !== undefined && sessionStorage.getItem('ip') !== null) {
+  if (sessionStorage.getItem(encrypt('ip')) !== undefined && sessionStorage.getItem(encrypt('ip')) !== null) {
     return
   }
   mxnzpClient.getIpInfo().then((resp) => {
@@ -52,11 +53,11 @@ const queryClientIpAddr = () => {
        * }
        */
       const location = resp.data.result.Country +' '+ resp.data.result.Province +' '+ resp.data.result.City
-      sessionStorage.setItem("location", location)
-      sessionStorage.setItem('ip', clientIp)
+      sessionStorage.setItem(encrypt("location"), encrypt(location))
+      sessionStorage.setItem(encrypt("ip"), encrypt(clientIp))
 
-      console.log("clientIp===>" + clientIp)
-      console.log("location===>" + location)
+      /*console.log("clientIp===>" + clientIp)
+      console.log("location===>" + location)*/
     })
   })
 }

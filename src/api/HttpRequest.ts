@@ -3,6 +3,7 @@ import {ElMessage} from 'element-plus'
 import {useUserStore} from '@/store/modules/user'
 import {HttpConstants} from '@/api/HttpConstans'
 import routers from "@/routers";
+import {decrypt} from "@/utils/crypto";
 
 class HttpRequest {
     service: AxiosInstance
@@ -28,7 +29,7 @@ class HttpRequest {
                 const token: string = userStore.token
                 // 自定义请求头
                 if (token) {
-                    config.headers['Authorization'] = token
+                    config.headers['Authorization'] = decrypt(token)
                 }
                 return config
             },
