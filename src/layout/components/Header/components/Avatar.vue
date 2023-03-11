@@ -1,8 +1,8 @@
 <template>
   <el-dropdown>
         <span class="el-dropdown-link">
-          <el-avatar :size="30" class="avatar" :src="AvatarLogo"/>
-          {{ userInfo.username }}
+          <el-avatar :size="30" class="avatar" :src="avatarURl" @error="switchDefaultAvatarLogo"/>
+          {{ userInfo.nick_name }}
           <el-icon class="header-icon el-icon--right">
             <arrow-down/>
           </el-icon>
@@ -21,7 +21,13 @@
           </el-icon>
           修改密码
         </el-dropdown-item>
-        <el-dropdown-item :command="4" divided @click="logOut">
+        <el-dropdown-item :command="3" divided @click="modifyHeaderImage">
+          <el-icon>
+            <Avatar/>
+          </el-icon>
+          修改头像
+        </el-dropdown-item>
+        <el-dropdown-item :command="4" divided @click="logout">
           <el-icon>
             <SwitchButton/>
           </el-icon>
@@ -31,24 +37,32 @@
     </template>
   </el-dropdown>
 
-  <PasswordDialog ref="person"/>
+  <PasswordDialog ref="passwordDialogRef"/>
+  <UserHeadImageDrawer ref="headerImageDrawerRef"/>
 </template>
 
 <script lang="ts" setup>
 import {useRouter} from 'vue-router'
-import {ElMessage, ElMessageBox} from "element-plus";
-import {computed, ref} from "vue";
+import {ElMessage, ElMessageBox, FormInstance} from "element-plus";
+import {computed, onMounted, ref} from "vue";
 
 import AvatarLogo from '@/assets/image/avatar.png'
 import {useUserStore} from "@/store/modules/user"
 import {useTagsViewStore} from "@/store/modules/tagsView"
 import {usePermissionStore} from "@/store/modules/permission"
 import PasswordDialog from './PasswordDialog.vue'
+import UserHeadImageDrawer from "@/views/user/user/components/UserHeadImageDrawer.vue";
 
 const router = useRouter()
 const UserStore = useUserStore()
 const TagsViewStore = useTagsViewStore()
 const PermissionStore = usePermissionStore()
+const avatarURl = ref('')
+const passwordDialogRef = ref()
+const headerImageDrawerRef = ref()
+// 用户信息
+const userInfo = computed(() => UserStore.userInfo)
+
 
 const currentRoles = computed({
   get() {
@@ -65,16 +79,20 @@ const currentRoles = computed({
   },
 })
 
+const switchDefaultAvatarLogo = () => {
+  avatarURl.value = AvatarLogo
+}
+
 const switchRolesAction = (type: string) => {
   if (type === currentRoles.value) return
   currentRoles.value = currentRoles.value === 'admin' ? 'other' : 'admin'
 }
 
-// 用户信息
-const userInfo = computed(() => UserStore.userInfo)
-const person = ref()
 
-const logOut = async () => {
+/**
+ * 退出登录
+ */
+const logout = async () => {
   ElMessageBox.confirm('您是否确认退出登录?', '温馨提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -100,8 +118,19 @@ const logOut = async () => {
  * 修改密码
  */
 const modifyPassword = () => {
-  person.value.show()
+  passwordDialogRef.value.show()
 }
+
+/**
+ * 修改头像
+ */
+const modifyHeaderImage = () => {
+  headerImageDrawerRef.value.show(UserStore.userInfo.id)
+}
+
+onMounted(() => {
+  avatarURl.value = UserStore.headImageUrl;
+})
 </script>
 
 <style lang="scss" scoped>

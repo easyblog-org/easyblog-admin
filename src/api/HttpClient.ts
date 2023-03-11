@@ -1,11 +1,13 @@
 import HttpRequest from '@/api/HttpRequest'
 import MxnzpRequest from "@/api/MxnzpRequest";
 import OpenApiRequest from "@/api/OpenApiRequest";
+import QiniuRequest from "@/api/QiniuRequest";
 
 class Client {
     protected request: HttpRequest
     protected mxnzpRequest: MxnzpRequest
     protected openApiRequest: OpenApiRequest
+    protected qiniuApiReqeust: QiniuRequest
 
     constructor() {
         this.request = new HttpRequest()
@@ -185,6 +187,13 @@ export class LoginClient extends Client {
     }
 
     /**
+     * 刷新登录信息
+     */
+    refresh(params: any): Promise<any> {
+        return this.request.get('/v1/auth/refresh', params)
+    }
+
+    /**
      * 修改密码
      * @param params
      */
@@ -198,6 +207,24 @@ export class LoginClient extends Client {
      */
     loginLogs(params: any): Promise<any> {
         return this.request.get('/v1/auth/logs', params)
+    }
+}
+
+export class HeaderImageClient extends Client {
+    /**
+     * 保存头像
+     * @param params
+     */
+    save(params: any): Promise<any> {
+        return this.request.post('/v1/header-image', params)
+    }
+
+    /**
+     * 查询头像详情
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/header-image', params)
     }
 }
 
@@ -226,6 +253,15 @@ export class OpenApiClient extends Client {
             ip: ip,
             key: '79618bdd93337d909b3425e083f593c1'
         })
+    }
+
+}
+
+export class QiniuApiClient extends Client {
+
+
+    getToken() {
+
     }
 
 }

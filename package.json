@@ -40,6 +40,7 @@
     "pinia": "^2.0.21",
     "pinia-plugin-persistedstate": "^2.1.1",
     "print-js": "^1.6.0",
+    "qiniu-js": "^3.4.1",
     "qs": "^6.11.0",
     "sass": "^1.54.0",
     "splitpanes": "^3.1.1",
