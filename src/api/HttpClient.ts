@@ -185,6 +185,14 @@ export class LoginClient extends Client {
     }
 
     /**
+     * 修改密码
+     * @param params
+     */
+    modifyPassword(params: any) {
+        return this.request.post('/v1/auth/modify-pwd', params)
+    }
+
+    /**
      * 查询登录日志
      * @param params
      */

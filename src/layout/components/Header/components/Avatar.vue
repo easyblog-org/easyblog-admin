@@ -31,7 +31,7 @@
     </template>
   </el-dropdown>
 
-  <PersonalDialog ref="person"/>
+  <PasswordDialog ref="person"/>
 </template>
 
 <script lang="ts" setup>
@@ -43,7 +43,7 @@ import AvatarLogo from '@/assets/image/avatar.png'
 import {useUserStore} from "@/store/modules/user"
 import {useTagsViewStore} from "@/store/modules/tagsView"
 import {usePermissionStore} from "@/store/modules/permission"
-import PersonalDialog from './PersonalDialog.vue'
+import PasswordDialog from './PasswordDialog.vue'
 
 const router = useRouter()
 const UserStore = useUserStore()
@@ -81,7 +81,7 @@ const logOut = async () => {
     type: 'warning',
   }).then(async () => {
     UserStore.logout().then((resp) => {
-      console.log("logout=="+resp)
+      console.log("logout==" + resp)
       router.replace({
         path: '/login'
       })
@@ -95,6 +95,10 @@ const logOut = async () => {
   }).catch(() => {
   })
 }
+
+/**
+ * 修改密码
+ */
 const modifyPassword = () => {
   person.value.show()
 }

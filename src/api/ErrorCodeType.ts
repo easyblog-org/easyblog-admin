@@ -1,5 +1,5 @@
-export const ErrorCodeType = function(code:string):string{
-    let errMessage:string = "未知错误"
+export const ErrorCodeType = function (code: string): string {
+    let errMessage: string = "未知错误"
     switch (code) {
         case '400':
             errMessage = '请求失败！请您稍后重试'
@@ -63,6 +63,9 @@ export const ErrorCodeType = function(code:string):string{
             break
         case 'auth_token_not_found':
             errMessage = '未登录'
+            break
+        case 'password_not_change':
+            errMessage = '新老密码不能一致'
             break
         default:
             errMessage = `其他连接错误 --${code}`
