@@ -135,7 +135,7 @@ class HttpRequest {
         return new Promise((resolve, reject) => {
             this.service.put(url, params)
                 .then((res) => {
-                    resolve(res.data.data)
+                    resolve(res.data)
                 }).catch((err) => {
                 reject(err.data.data)
             })

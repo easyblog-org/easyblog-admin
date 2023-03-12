@@ -44,14 +44,6 @@ export const useUserStore = defineStore({
                         // @ts-ignore
                         this.token = encrypt(resp.data.token)
                         // @ts-ignore
-                        /*this.userInfo = resp.data.user
-                        if (undefined !== this.userInfo && null !== this.userInfo) {
-                            this.account = this.userInfo.curr_account
-                            const headerImg = this.userInfo.user_current_images
-                            if (undefined !== headerImg && null !== headerImg) {
-                                this.headImageUrl = headerImg.header_img_url;
-                            }
-                        }*/
                         this.initState(resp.data)
                         resolve(resp)
                     } else {

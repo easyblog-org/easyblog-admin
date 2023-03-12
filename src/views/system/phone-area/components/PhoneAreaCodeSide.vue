@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import {onBeforeMount, ref, watch} from 'vue'
+import {onBeforeMount, onMounted, ref, watch} from 'vue'
 import {ElMessage, ElMessageBox, ElTree} from "element-plus";
 import {staticClient} from "@/api";
 
@@ -53,17 +53,15 @@ interface Tree {
 }
 
 const loadPhoneAreaCodeList = () => {
-  let allObj = {"id": null, "name": "全部"}
   staticClient.getAllContinent().then((resp: Continent[]) => {
     if (!resp) return
-    console.log(resp)
     for (let index in resp) {
       phoneAreaData.value.push({
         id: resp[index].key,
         name: resp[index].value
       })
     }
-    phoneAreaList.value = [allObj, ...phoneAreaData.value]
+    phoneAreaList.value = [{"id": null, "name": "全部"}, ...phoneAreaData.value]
   }).catch((err) => {
     ElMessage({
       message: err.message,
@@ -106,6 +104,10 @@ const selectAction = (node, data) => {
   console.log('data===>', data)
   emit('change', data)
 }
+
+onMounted(() => {
+  selectAction(null, {id: null, name: '全部'})
+})
 </script>
 
 <style lang="scss" scoped>

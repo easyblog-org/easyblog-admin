@@ -245,6 +245,15 @@ export class PhoneAreaClient extends Client {
     }
 
     /**
+     * 创建phone area
+     * @param phone_area_code
+     * @param params
+     */
+    update(phone_area_code: number, params: any): Promise<any> {
+        return this.request.put(`/v1/phone-area/${phone_area_code}`, params);
+    }
+
+    /**
      * 查询phone area code map
      * @param params
      */

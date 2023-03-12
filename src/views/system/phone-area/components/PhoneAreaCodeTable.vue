@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <PhoneAreaEntryDialog ref="phoneAreaEntryDialog"/>
+    <PhoneAreaEntryDialog @refresh="loadPhoneAreaDetailListData" ref="phoneAreaEntryDialog"/>
   </div>
 </template>
 <script lang="ts" setup>

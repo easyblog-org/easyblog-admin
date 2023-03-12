@@ -67,6 +67,9 @@ export const ErrorCodeType = function (code: string): string {
         case 'password_not_change':
             errMessage = '新老密码不能一致'
             break
+        case 'phone_area_code_already_exists':
+            errMessage = '地区码已经存在'
+            break
         default:
             errMessage = `其他连接错误 --${code}`
     }
