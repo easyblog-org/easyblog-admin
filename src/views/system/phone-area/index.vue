@@ -1,13 +1,13 @@
 <template>
   <div class="app-container m-user">
-    <Side @change="changeAction"/>
-    <Table ref="table"/>
+    <PhoneAreaCodeSide @change="changeAction"/>
+    <PhoneAreaCodeTable ref="table"/>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import Table from './components/Table.vue'
-  import Side from './components/Side.vue'
+  import PhoneAreaCodeTable from './components/PhoneAreaCodeTable.vue'
+  import PhoneAreaCodeSide from './components/PhoneAreaCodeSide.vue'
   import { ref } from "vue";
 
   const table = ref()
