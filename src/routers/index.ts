@@ -8,7 +8,6 @@ interface extendRoute {
 import userRouter from './modules/user'
 import tableRouter from './modules/table'
 import excelRouter from './modules/excel'
-import nestedRouter from './modules/nested'
 import systemRouter from './modules/system'
 import echartsRouter from './modules/echarts'
 import othersRouter from './modules/other'
@@ -24,7 +23,6 @@ export const asyncRoutes = [
     ...formRouter,
     ...othersRouter,
     ...functionPageRouter,
-    ...nestedRouter,
     ...excelRouter,
     ...externalLink,
     ...systemRouter

@@ -39,7 +39,7 @@ import {reactive, ref} from "vue";
 
 const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref<boolean>(false)
-const title = ref('新增字典项')
+const title = ref('新增国际冠码与国码')
 import { dictionaryData } from '@/mock/system'
 
 const cascaderProps = {
@@ -68,15 +68,13 @@ function close() {
   ruleFormRef.value.resetFields()
   Object.keys(ruleForm).forEach(key=>{
     ruleForm[key] = null
-
   })
 }
 
 const show = (item={})=>{
-  console.log('======item=======',item)
-  title.value = '新增字典项'
+  title.value = '新增国际冠码与国码'
   if(item.pid){
-    title.value = '编辑字典项'
+    title.value = '编辑国际冠码与国码'
     Object.keys(item).forEach(key=>{
       ruleForm[key] = item[key]
     })

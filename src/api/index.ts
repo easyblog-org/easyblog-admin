@@ -2,7 +2,7 @@ import {
     AccountClient, HeaderImageClient,
     LoginClient,
     MxnzpClient,
-    OpenApiClient,
+    OpenApiClient, PhoneAreaClient,
     RolesClient,
     StaticClient,
     UserClient
@@ -14,5 +14,6 @@ export let accountClient: AccountClient = new AccountClient()
 export let staticClient: StaticClient = new StaticClient()
 export let loginClient: LoginClient = new LoginClient()
 export let headerClient: HeaderImageClient = new HeaderImageClient()
+export let phoneAreaClient: PhoneAreaClient = new PhoneAreaClient()
 export let mxnzpClient: MxnzpClient = new MxnzpClient()
 export let openApiClient: OpenApiClient = new OpenApiClient()

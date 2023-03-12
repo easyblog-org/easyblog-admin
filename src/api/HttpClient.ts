@@ -160,10 +160,17 @@ export class AccountClient extends Client {
  */
 export class StaticClient extends Client {
     /**
-     * 加载所有账号类型
+     * 加载所有账号类型枚举
      */
     getAllIdentityType() {
         return this.request.get('/v1/static/identity_types')
+    }
+
+    /**
+     * 查询所有大洲枚举
+     */
+    getAllContinent() {
+        return this.request.get('/v1/static/continents')
     }
 
 }
@@ -228,6 +235,25 @@ export class HeaderImageClient extends Client {
     }
 }
 
+export class PhoneAreaClient extends Client {
+    /**
+     * 创建phone area
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/phone-area', params);
+    }
+
+    /**
+     * 查询phone area code map
+     * @param params
+     */
+    queryPhoneAreaCodeMap(params: any): Promise<any> {
+        return this.request.get('/v1/phone-area/tree', params)
+    }
+
+}
+
 
 /**=======================================================================================================
  *  三方接口
@@ -253,15 +279,6 @@ export class OpenApiClient extends Client {
             ip: ip,
             key: '79618bdd93337d909b3425e083f593c1'
         })
-    }
-
-}
-
-export class QiniuApiClient extends Client {
-
-
-    getToken() {
-
     }
 
 }

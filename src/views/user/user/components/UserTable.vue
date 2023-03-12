@@ -169,7 +169,6 @@ const reset = (formEl: FormInstance | undefined) => {
   userListRequestParam.nickname = null
   userListRequestParam.status = null
   userListRequestParam.codes = null
-  loading.value = true
   loadUserList()
 }
 
