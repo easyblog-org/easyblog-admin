@@ -38,7 +38,7 @@
   </el-dropdown>
 
   <PasswordDialog ref="passwordDialogRef"/>
-  <UserHeadImageDrawer ref="headerImageDrawerRef"/>
+  <UserHeaderDrawer ref="headerImageDrawerRef"/>
 </template>
 
 <script lang="ts" setup>
@@ -51,7 +51,7 @@ import {useUserStore} from "@/store/modules/user"
 import {useTagsViewStore} from "@/store/modules/tagsView"
 import {usePermissionStore} from "@/store/modules/permission"
 import PasswordDialog from './PasswordDialog.vue'
-import UserHeadImageDrawer from "@/views/user/user/components/UserHeadImageDrawer.vue";
+import UserHeaderDrawer from "@/views/user/user/components/UserHeaderDrawer.vue";
 
 const router = useRouter()
 const UserStore = useUserStore()

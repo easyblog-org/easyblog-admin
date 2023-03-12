@@ -102,7 +102,7 @@
 
   <UserDialog @refresh="loadUserList" ref="userDialog"/>
   <AccountDetailsDrawer ref="accountDialog"/>
-  <UserHeadImageDrawer ref="userHeadImageDrawer"/>
+  <UserHeaderDrawer ref="userHeadImageDrawer"/>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
@@ -111,7 +111,7 @@ import {onMounted, reactive, ref} from 'vue'
 import UserDialog from './UserDialog.vue'
 import {userClient} from '@/api'
 import AccountDetailsDrawer from "@/views/user/account/components/AccountDetail.vue";
-import UserHeadImageDrawer from "@/views/user/user/components/UserHeadImageDrawer.vue";
+import UserHeaderDrawer from "@/views/user/user/components/UserHeaderDrawer.vue";
 
 const dialogVisible = ref(false)
 const userDialog = ref()
