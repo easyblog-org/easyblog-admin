@@ -72,7 +72,7 @@ class HttpRequest {
      * duration 消息持续时间
      */
     showErrMessage(err, type: any = 'error', duration = 3000) {
-        if (undefined === err || null === err) {
+        if (!err) {
             return
         }
         ElMessage({
@@ -96,6 +96,24 @@ class HttpRequest {
             }).catch((err) => {
                 this.showErrMessage(err.data.data)
                 reject(err.data.data)
+            })
+        })
+    }
+
+    /**
+     * 发送Delete请求
+     * @param {String} url [请求的url地址]
+     * @param {Object} params [请求时携带的参数]
+     */
+    delete(url: string, params?: any) {
+        return new Promise((resolve, reject) => {
+            this.service.delete(url, {
+                params: params,
+            }).then((res) => {
+                resolve(res.data)
+            }).catch((err) => {
+                this.showErrMessage(err.data)
+                reject(err.data)
             })
         })
     }

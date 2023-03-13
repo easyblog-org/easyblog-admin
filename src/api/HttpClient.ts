@@ -1,13 +1,11 @@
 import HttpRequest from '@/api/HttpRequest'
 import MxnzpRequest from "@/api/MxnzpRequest";
 import OpenApiRequest from "@/api/OpenApiRequest";
-import QiniuRequest from "@/api/QiniuRequest";
 
 class Client {
     protected request: HttpRequest
     protected mxnzpRequest: MxnzpRequest
     protected openApiRequest: OpenApiRequest
-    protected qiniuApiReqeust: QiniuRequest
 
     constructor() {
         this.request = new HttpRequest()
@@ -261,6 +259,14 @@ export class PhoneAreaClient extends Client {
         return this.request.get('/v1/phone-area/tree', params)
     }
 
+    /**
+     * 删除phone area code
+     * @param params
+     */
+    deleteByIds(params: any): Promise<any> {
+        return this.request.delete('/v1/phone-area',params)
+
+    }
 }
 
 

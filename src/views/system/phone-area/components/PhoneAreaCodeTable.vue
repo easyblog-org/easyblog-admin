@@ -72,6 +72,7 @@ import {Search} from '@element-plus/icons-vue'
 import {reactive, ref} from 'vue'
 import PhoneAreaEntryDialog from './PhoneAreaEntryDialog.vue'
 import {phoneAreaClient} from "@/api";
+import {ErrorCodeType} from "@/api/ErrorCodeType";
 
 const phoneAreaDetailListData = ref()
 const dialogVisible = ref(false)
@@ -143,7 +144,26 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-  }).catch(() => {
+    phoneAreaClient.deleteByIds({
+      "phone_area_code_ids": row.id,
+      "password": "8RxuwjDS8Y"
+    }).then((resp) => {
+      if (!resp) return
+      if (resp.success) {
+        ElMessage({
+          message: '删除成功',
+          type: 'success',
+        })
+
+        loadPhoneAreaDetailListData()
+      } else {
+        const errorMsg = ErrorCodeType(resp.code);
+        ElMessage({
+          message: errorMsg,
+          type: 'error',
+        })
+      }
+    })
   })
 }
 
