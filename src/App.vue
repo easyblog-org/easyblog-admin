@@ -22,7 +22,6 @@ const queryClientIpAddr = () => {
     return
   }
   mxnzpClient.getIpInfo().then((resp) => {
-    console.log(resp)
     if (undefined === resp || null === resp) {
       return
     }

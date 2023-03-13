@@ -13,22 +13,16 @@ const systemRouter = [{
     },
     children: [
         {
-            path: 'dept',
-            component: () => import('@/views/system/dept/index.vue'),
-            name: 'dept',
-            meta: { title: '部门管理' , icon: 'MenuIcon'}
-        },
-        {
             path: 'menu',
             component: () => import('@/views/system/menu/index.vue'),
             name: 'menu',
             meta: { title: '菜单管理',  icon: 'MenuIcon'}
         },
         {
-            path: 'dictionary',
-            component: () => import('@/views/system/dictionary/index.vue'),
-            name: 'dictionary',
-            meta: { title: '字典管理',  icon: 'MenuIcon'}
+            path: 'phone-area',
+            component: () => import('@/views/system/phone-area/index.vue'),
+            name: 'phone-area',
+            meta: { title: '冠码管理',  icon: 'LocationInformation'}
         },
     ]
 }]

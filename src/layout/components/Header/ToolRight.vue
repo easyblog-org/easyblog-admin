@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import GlobalComSize from './components/globalComSize.vue'
+import GlobalComSize from './components/GlobalComSize.vue'
 import HeaderSearch from './components/HeaderSearch.vue'
 import Remind from './components/Remind.vue'
 import ScreenFull from './components/ScreenFull.vue'

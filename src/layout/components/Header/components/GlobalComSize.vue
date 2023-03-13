@@ -3,7 +3,7 @@
     <svg-icon class-name="size-icon header-icon" icon-class="size" style="font-size: 20px;cursor: pointer"/>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item v-for="item in assemblySizeList" :key="item" :disabled="globalComSize === item" :command="item">
+        <el-dropdown-item v-for="item in assemblySizeList" :key="item" :disabled="GlobalComSize === item" :command="item">
           {{ assemblySizeListCh[item] }}
         </el-dropdown-item>
       </el-dropdown-menu>
@@ -27,8 +27,8 @@ const assemblySizeListCh = reactive<{ [key: string]: any }>({
 const assemblySizeList = reactive<string[]>(["default", "large", "small"]);
 
 const setAssemblySize = (item: string) => {
-  if (globalComSize.value === item) return;
-  SettingStore.setThemeConfig({key:'globalComSize', val:item})
+  if (GlobalComSize.value === item) return;
+  SettingStore.setThemeConfig({key:'GlobalComSize.vue', val:item})
 };
 </script>
 

@@ -158,10 +158,17 @@ export class AccountClient extends Client {
  */
 export class StaticClient extends Client {
     /**
-     * 加载所有账号类型
+     * 加载所有账号类型枚举
      */
     getAllIdentityType() {
         return this.request.get('/v1/static/identity_types')
+    }
+
+    /**
+     * 查询所有大洲枚举
+     */
+    getAllContinent() {
+        return this.request.get('/v1/static/continents')
     }
 
 }
@@ -185,6 +192,13 @@ export class LoginClient extends Client {
     }
 
     /**
+     * 刷新登录信息
+     */
+    refresh(params: any): Promise<any> {
+        return this.request.get('/v1/auth/refresh', params)
+    }
+
+    /**
      * 修改密码
      * @param params
      */
@@ -198,6 +212,60 @@ export class LoginClient extends Client {
      */
     loginLogs(params: any): Promise<any> {
         return this.request.get('/v1/auth/logs', params)
+    }
+}
+
+export class HeaderImageClient extends Client {
+    /**
+     * 保存头像
+     * @param params
+     */
+    save(params: any): Promise<any> {
+        return this.request.post('/v1/header-image', params)
+    }
+
+    /**
+     * 查询头像详情
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/header-image', params)
+    }
+}
+
+export class PhoneAreaClient extends Client {
+    /**
+     * 创建phone area
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/phone-area', params);
+    }
+
+    /**
+     * 创建phone area
+     * @param phone_area_code
+     * @param params
+     */
+    update(phone_area_code: number, params: any): Promise<any> {
+        return this.request.put(`/v1/phone-area/${phone_area_code}`, params);
+    }
+
+    /**
+     * 查询phone area code map
+     * @param params
+     */
+    queryPhoneAreaCodeMap(params: any): Promise<any> {
+        return this.request.get('/v1/phone-area/tree', params)
+    }
+
+    /**
+     * 删除phone area code
+     * @param params
+     */
+    deleteByIds(params: any): Promise<any> {
+        return this.request.delete('/v1/phone-area',params)
+
     }
 }
 

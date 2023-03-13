@@ -3,7 +3,7 @@
     <el-popover width="200px" placement="bottom">
       <template #reference>
         <el-badge :value="3" class="item-info-pop">
-          <el-icon class="bell header-icon" style="font-size: 20px;"><Bell /></el-icon>
+          <el-icon class="bell header-icon" style="font-size: 20px;"><Bell/></el-icon>
         </el-badge>
       </template>
       <div>
@@ -30,6 +30,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
+import {Bell} from '@element-plus/icons-vue'
 
 const activeName = ref('first')
 const toGitHub = (link) => {

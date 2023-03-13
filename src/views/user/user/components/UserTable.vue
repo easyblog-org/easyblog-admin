@@ -65,6 +65,13 @@
               />
             </template>
           </el-table-column>
+          <el-table-column prop="user_current_images" label="用户头像" align="center" width="120">
+            <template #default="scope">
+              <el-button type="primary" text @click="showUserHeadImage(scope.row.id)">
+                查看
+              </el-button>
+            </template>
+          </el-table-column>
           <el-table-column prop="create_time" label="创建时间" align="center" width="180"/>
           <el-table-column prop="update_time" label="更新时间" align="center" width="180"/>
           <el-table-column prop="operator" label="操作" width="200px" align="center" fixed="right">
@@ -91,10 +98,11 @@
         />
       </div>
     </div>
-
-    <UserDialog @refresh="loadUserList" ref="userDialog"/>
-    <AccountDetailsDrawer ref="accountDialog"/>
   </div>
+
+  <UserDialog @refresh="loadUserList" ref="userDialog"/>
+  <AccountDetailsDrawer ref="accountDialog"/>
+  <UserHeaderDrawer ref="userHeadImageDrawer"/>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
@@ -103,10 +111,12 @@ import {onMounted, reactive, ref} from 'vue'
 import UserDialog from './UserDialog.vue'
 import {userClient} from '@/api'
 import AccountDetailsDrawer from "@/views/user/account/components/AccountDetail.vue";
+import UserHeaderDrawer from "@/views/user/user/components/UserHeaderDrawer.vue";
 
 const dialogVisible = ref(false)
 const userDialog = ref()
 const accountDialog = ref()
+const userHeadImageDrawer = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({
   query_key: 'nickname',
@@ -159,7 +169,6 @@ const reset = (formEl: FormInstance | undefined) => {
   userListRequestParam.nickname = null
   userListRequestParam.status = null
   userListRequestParam.codes = null
-  loading.value = true
   loadUserList()
 }
 
@@ -175,6 +184,14 @@ const editHandler = (row) => {
  */
 const showAccount = (accounts: any[]) => {
   accountDialog.value.show(accounts)
+}
+
+/**
+ * 展示用户头像
+ * @param headImage
+ */
+const showUserHeadImage = (user_id: any) => {
+   userHeadImageDrawer.value.show(user_id)
 }
 
 /**
