@@ -63,7 +63,7 @@ const rules = reactive({
 })
 
 const ruleForm = reactive({
-  id: null,
+  code: null,
   identity_type: null,
   identifier: null,
   verified: null,
@@ -94,7 +94,7 @@ const show = (item = {}) => {
 const handleClose = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
-      accountClient.update(ruleForm.id, {
+      accountClient.update(ruleForm.code, {
         identity_type: ruleForm.identity_type,
         identifier: ruleForm.identifier,
         verified: ruleForm.verified ? 1 : 0,

@@ -93,13 +93,13 @@ const headImage = ref();
 const loading = ref(true)
 const headImageUrl = ref()
 const uploadFileList = ref([])
-const userId = ref()
+const userCode = ref()
 
-const show = (user_id: number) => {
+const show = (user_code: string) => {
   title.value = '用户头像'
   loading.value = true
-  userId.value = user_id
-  loadUserHeaderImage(user_id).then(() => {
+  userCode.value = user_code
+  loadUserHeaderImage(user_code).then(() => {
     if (undefined !== headImage.value && null !== headImage.value) {
       headImageUrl.value = headImage.value.header_img_url
     }
@@ -171,7 +171,7 @@ const uploadImage = async (file: File) => {
  */
 const changeCurrentLoginUserAvatar = (newHeaderUrl) => {
   if (!newHeaderUrl) return
-  if (UserStore.userInfo == null || UserStore.userInfo.id !== userId.value) return;
+  if (UserStore.userInfo == null || UserStore.userInfo.id !== userCode.value) return;
   UserStore.refresh()
 }
 
@@ -192,7 +192,7 @@ const onSure = () => {
  */
 const saveHeaderImage = (image_url: string) => {
   return headerClient.save({
-    user_id: userId.value,
+    user_code: userCode.value,
     header_img_url: image_url
   }).then(() => {
     dialogVisible.value = false
@@ -206,11 +206,11 @@ const saveHeaderImage = (image_url: string) => {
 
 /**
  * 查询头像
- * @param user_id
+ * @param user_code
  */
-const loadUserHeaderImage = (user_id: number): Promise<any> => {
+const loadUserHeaderImage = (user_code: string): Promise<any> => {
   return headerClient.details({
-    'user_id': user_id,
+    'user_code': user_code,
     'status': 1
   }).then((resp) => {
     headImage.value = resp

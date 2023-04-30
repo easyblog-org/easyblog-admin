@@ -7,7 +7,7 @@
       <div class="table-inner">
         <el-table v-loading="loading" :data="loginLogList" stripe style="width: 100%">
           <el-table-column prop="location" label="登录地点" width="200"/>
-          <el-table-column prop="ip" label="登录IP" width="200"/>
+          <el-table-column prop="ip_address" label="登录IP" width="200"/>
           <el-table-column prop="device" label="登录设备" width="200"/>
           <el-table-column prop="operation_system" label="操作系统" width="200"/>
           <el-table-column prop="status" label="登录状态">
@@ -54,8 +54,8 @@ const loading = ref(true)
 const currentPage = ref(1)
 const total = ref(0)
 const queryLoginLogsParam = {
-  user_id: null,
-  account_id: null,
+  user_code: null,
+  account_code: null,
   limit: 10,
   offset: 0
 }
@@ -64,11 +64,11 @@ function close() {
   dialogVisible.value = false
 }
 
-const show = (user_id: number, account_id: number) => {
+const show = (user_code: string, account_code: string) => {
   title.value = '登录日志'
-  console.log(user_id + "," + account_id)
-  queryLoginLogsParam.user_id = user_id
-  queryLoginLogsParam.account_id = account_id
+  console.log(user_code + "," + account_code)
+  queryLoginLogsParam.user_code = user_code
+  queryLoginLogsParam.account_code = account_code
   loadLoginLogs()
 }
 
