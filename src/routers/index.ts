@@ -6,6 +6,7 @@ interface extendRoute {
 }
 //
 import userRouter from './modules/user'
+import messageRouter from './modules/message'
 import tableRouter from './modules/table'
 import excelRouter from './modules/excel'
 import systemRouter from './modules/system'
@@ -18,6 +19,7 @@ import functionPageRouter from './modules/functionPage'
 // 异步组件
 export const asyncRoutes = [
     ...userRouter,
+    ...messageRouter,
     ...echartsRouter,
     ...tableRouter,
     ...formRouter,

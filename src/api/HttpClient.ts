@@ -264,7 +264,44 @@ export class PhoneAreaClient extends Client {
      * @param params
      */
     deleteByIds(params: any): Promise<any> {
-        return this.request.delete('/v1/phone-area',params)
+        return this.request.delete('/v1/phone-area', params)
+
+    }
+}
+
+
+export class MessageTemplateClient extends Client {
+    /**
+     * 创建消息模板
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/template', params);
+    }
+
+    /**
+     * 更新消息模板
+     * @param template_code
+     * @param params
+     */
+    update(template_code: string, params: any): Promise<any> {
+        return this.request.put(`/v1/template/${template_code}`, params);
+    }
+
+    /**
+     * 查询消息模板
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/template', params)
+    }
+
+    /**
+     * 查询消息模板列表
+     * @param params
+     */
+    list(params: any): Promise<any> {
+        return this.request.get('/v1/template/list', params)
 
     }
 }

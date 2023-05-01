@@ -1,6 +1,9 @@
 <template>
-  <el-drawer v-model="dialogVisible" :title="title" size="50%" @close="close">
-   <div v-if="total===0">
+  <el-drawer class="user-detail-drawer" v-model="dialogVisible"  size="50%" @close="close">
+    <template #header="{ titleId }">
+      <span :id="titleId" class="header">登录日志</span>
+    </template>
+    <div v-if="total===0">
      <el-empty :image-size="200"/>
    </div >
     <div class="account-table-body" v-if="total!==0">
