@@ -189,6 +189,15 @@ export class StaticClient extends Client {
         return this.request.get('/v1/static/msg-shield-type')
 
     }
+
+    /**
+     * 查询消息类型
+     * @param params
+     */
+    getAllMsgConfigType(): Promise<any> {
+        return this.request.get('/v1/static/msg-config-type')
+
+    }
 }
 
 export class LoginClient extends Client {

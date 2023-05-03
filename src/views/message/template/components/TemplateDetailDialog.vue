@@ -36,6 +36,7 @@ const show = (item = {}) => {
 }
 
 function highlightText(text: string): string {
+  if (!text) return null;
   const regex = /\${([^}]*)}/g;
   return text.replace(regex, '<span style="background-color: yellow; border:solid 1px yellow">$&</span>');
 }
