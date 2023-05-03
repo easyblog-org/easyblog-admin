@@ -1,5 +1,5 @@
 <template>
-  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
+  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%" draggable>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px">
       <el-form-item label="账户类型" prop="identity_type">
         <el-select

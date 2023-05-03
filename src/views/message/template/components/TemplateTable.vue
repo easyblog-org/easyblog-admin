@@ -57,13 +57,6 @@
               <el-tag v-if="scope.row.shield_type===2" class="mx-1" size="default">夜间不屏蔽</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="msg_content" label="模板内容" align="center" width="120">
-            <template #default="scope">
-              <el-button type="primary" text @click="showTemplateDetails(scope.row)">
-                预览
-              </el-button>
-            </template>
-          </el-table-column>
           <el-table-column prop="status" label="发布状态" align="center" width="120">
             <template #default="scope">
               <el-tag v-if="scope.row.status===1" class="mx-1" size="default" type="danger">未发布</el-tag>
@@ -72,10 +65,14 @@
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" align="center" width="180"/>
           <el-table-column prop="update_time" label="更新时间" align="center" width="180"/>
-          <el-table-column prop="operator" label="操作" width="280px" align="center" fixed="right">
+          <el-table-column prop="operator" label="操作" width="350px" align="center" fixed="right">
             <template #default="scope">
-              <el-button type="success" size="small" icon="Open" @click="release(scope.row)">
+              <el-button type="success" size="small" icon="Open" @click="release(scope.row)"
+                         :disabled="scope.row.status===2">
                 发布模板
+              </el-button>
+              <el-button color="#626aef" size="small" icon="View" @click="showTemplateDetails(scope.row)">
+                预览
               </el-button>
               <el-button type="primary" size="small" icon="Edit" @click="editHandler(scope.row)">
                 编辑
@@ -101,16 +98,19 @@
     </div>
   </div>
 
-  <TemplateDrawer @refresh="loadTemplateList" ref="templateDrawer"/>
+  <TemplateModifyDrawer @refresh="loadTemplateList" ref="templateDrawer"/>
+  <TemplateDetailDialog ref="templateDialog"/>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
 import {messageTemplateClient} from '@/api'
-import TemplateDrawer from "@/views/message/template/components/TemplateDrawer.vue";
+import TemplateModifyDrawer from "@/views/message/template/components/TemplateModifyDrawer.vue";
+import TemplateDetailDialog from "@/views/message/template/components/TemplateDetailDialog.vue";
 
 const templateDrawer = ref()
+const templateDialog = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({
   query_key: 'name',
@@ -199,7 +199,7 @@ const editHandler = (row) => {
  * @param row
  */
 const showTemplateDetails = (row) => {
-
+  templateDialog.value.show(row)
 }
 
 /**
@@ -213,7 +213,7 @@ const release = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchTemplateStatus(row.code, 2)
+    switchTemplateStatus(row.template_code, 2)
   })
 }
 
@@ -236,6 +236,8 @@ const switchTemplateStatus = (code: string, status: number, deleted?: boolean) =
       message: '更新失败',
       type: 'error',
     })
+  }).finally(() => {
+    loadTemplateList()
   })
 }
 
@@ -250,7 +252,9 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchTemplateStatus(row.code, null, true)
+    switchTemplateStatus(row.template_code, null, true)
+  }).finally(() => {
+    loadTemplateList()
   })
 }
 

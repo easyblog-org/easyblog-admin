@@ -1,5 +1,5 @@
 <template>
-  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
+  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%" draggable>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px">
       <el-form-item label="昵称" prop="nick_name">
         <el-input v-model="ruleForm.nick_name" placeholder="请输入昵称"/>

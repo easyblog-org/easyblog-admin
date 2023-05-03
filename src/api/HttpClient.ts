@@ -171,6 +171,24 @@ export class StaticClient extends Client {
         return this.request.get('/v1/static/continents')
     }
 
+
+    /**
+     * 查询消息模板类型枚举
+     * @param params
+     */
+    getAllMsgType(): Promise<any> {
+        return this.request.get('/v1/static/msg-type')
+
+    }
+
+    /**
+     * 查询消息夜间屏蔽类型枚举
+     * @param params
+     */
+    getAllMsgShieldType(): Promise<any> {
+        return this.request.get('/v1/static/msg-shield-type')
+
+    }
 }
 
 export class LoginClient extends Client {

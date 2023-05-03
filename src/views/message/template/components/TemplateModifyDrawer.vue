@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 import {onMounted, reactive, ref} from "vue";
 import {ElMessage, FormInstance} from "element-plus";
-import {messageTemplateClient} from "@/api";
+import {messageTemplateClient, staticClient} from "@/api";
 
 const emits = defineEmits<{
   (event: 'refresh'): void
@@ -78,31 +78,8 @@ const dialogVisible = ref(false)
 const title = ref('添加模板')
 const isEdit = ref<boolean>(false)
 const loading = ref(true)
-const msgTypeList = ref([
-  {
-    key: "1",
-    value: "通知类型消息"
-  },
-  {
-    key: "2",
-    value: "营销类消息"
-  },
-  {
-    key: "3",
-    value: "验证码类消息"
-  }
-])
-
-const shieldTypeList = ref([
-  {
-    key: "1",
-    value: "夜间不屏蔽"
-  },
-  {
-    key: "2",
-    value: "夜间屏蔽"
-  }
-])
+const msgTypeList = ref([])
+const shieldTypeList = ref([])
 
 
 const ruleForm = reactive({
@@ -128,7 +105,7 @@ const rules = reactive({
     {required: true, message: '请选择夜间屏蔽类型', trigger: 'change'}],
   msg_content: [
     {required: true, message: '请输入模板内容', trigger: 'blur'},
-    {min: 1, max: 5000, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+    {min: 1, max: 20000, message: '长度在 1 到 10000 个字符', trigger: 'blur'}
   ]
 })
 
@@ -136,10 +113,16 @@ const show = (item = {}) => {
   title.value = '添加模板'
   loading.value = true
   isEdit.value = false
-  if (item['code']) {
+  if (item['template_code']) {
     title.value = '编辑模板'
     isEdit.value = true
+    Object.keys(item).forEach((key) => {
+      ruleForm[key] = item[key]
+    })
   }
+
+  loadAllMsgType()
+  loadAllMsgShieldType()
   dialogVisible.value = true
 }
 
@@ -174,13 +157,16 @@ const handleClose = () => {
   //关闭抽屉
   dialogVisible.value = false
   ruleFormRef.value.resetFields()
-
+  Object.keys(ruleForm).forEach((key) => {
+    ruleForm[key] = null
+  })
 }
 
 
 const handleSubmit = async (done: () => void) => {
   await ruleFormRef.value.validate(async (valid, fields) => {
     if (valid) {
+      loading.value = true
       if (isEdit.value) {
         //编辑模板
         updateTemplate()
@@ -188,7 +174,7 @@ const handleSubmit = async (done: () => void) => {
         //创建模板
         createTemplate()
       }
-      dialogVisible.value = false
+      loading.value = false
     }
   })
 }
@@ -207,6 +193,7 @@ const updateTemplate = () => {
       type: 'success',
     })
 
+    dialogVisible.value = false
     //刷新父页面数据
     emits('refresh')
   }).catch(() => {
@@ -234,11 +221,36 @@ const createTemplate = () => {
       type: 'success',
     })
 
+    dialogVisible.value = false
     //刷新父页面数据
     emits('refresh')
   }).catch(() => {
     ElMessage({
       message: '添加失败',
+      type: 'error',
+    })
+  })
+}
+
+const loadAllMsgType = () => {
+  staticClient.getAllMsgType().then((resp) => {
+    msgTypeList.value = resp
+    console.log(resp);
+  }).catch((err) => {
+    ElMessage({
+      message: err.message,
+      type: 'error',
+    })
+  })
+}
+
+const loadAllMsgShieldType = () => {
+  staticClient.getAllMsgShieldType().then((resp) => {
+    shieldTypeList.value = resp
+    console.log(resp);
+  }).catch((err) => {
+    ElMessage({
+      message: err.message,
       type: 'error',
     })
   })

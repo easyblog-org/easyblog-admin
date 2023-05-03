@@ -1,5 +1,5 @@
 <template>
-  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
+  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%" draggable>
     <el-form
         ref="ruleFormRef"
         :model="ruleForm"
