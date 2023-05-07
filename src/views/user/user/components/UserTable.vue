@@ -283,7 +283,6 @@ const loadUserList = () => {
       list[i].status = list[i].active === 1
     }
     userList.value = list
-    console.log(list)
   }).finally(() => {
     loading.value = false
   })

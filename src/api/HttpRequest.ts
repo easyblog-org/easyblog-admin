@@ -44,16 +44,18 @@ class HttpRequest {
             (response: AxiosResponse) => {
                 // 直接返回res，当然你也可以只返回res.data
                 // 系统如果有自定义code也可以在这里处理
-                if (response.data.code === 'auth_token_not_found' ||
-                    response.data.code === 'auth_expired') {
-                    //可能是token过期，清除它
-                    const userStore = useUserStore()
-                    userStore.token = null;
-                    //跳转到登录页面
-                    routers.replace({
-                        path: '/login'
-                    });
-
+                console.log(JSON.stringify(response))
+                if (!response.data.success) {
+                    if (response.data.code === 'auth_token_not_found' ||
+                        response.data.code === 'auth_expired') {
+                        //可能是token过期，清除它
+                        const userStore = useUserStore()
+                        userStore.token = null;
+                        //跳转到登录页面
+                        routers.replace({
+                            path: '/login'
+                        });
+                    }
                     return Promise.reject(response)
                 }
                 return Promise.resolve(response)

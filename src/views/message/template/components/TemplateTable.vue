@@ -183,6 +183,7 @@ const reset = (formEl: FormInstance | undefined) => {
   templateListRequestParam.template_codes = null
   templateListRequestParam.msg_type = null
   templateListRequestParam.shield_type = null
+  formInline.query_value = null
   loadTemplateList()
 }
 

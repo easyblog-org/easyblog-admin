@@ -73,8 +73,11 @@ export const ErrorCodeType = function (code: string): string {
         case 'delete_operation_not_permission':
             errMessage='无删除操作权限'
             break
+        case 'message_config_rule_exists':
+            errMessage='相同消息推送配置已存在'
+            break
         default:
-            errMessage = `其他连接错误 --${code}`
+            errMessage = `${code}`
     }
     return errMessage
 }

@@ -196,7 +196,20 @@ export class StaticClient extends Client {
      */
     getAllMsgConfigType(): Promise<any> {
         return this.request.get('/v1/static/msg-config-type')
+    }
 
+    /**
+     * 查询消息推送渠道
+     */
+    getAllMsgPushChannel(): Promise<any> {
+        return this.request.get('/v1/static/msg-push-channel')
+    }
+
+    /**
+     * 查询消息取值类型
+     */
+    getAllMsgTemplateConfigValueType(): Promise<any> {
+        return this.request.get('/v1/static/msg-template-value-type')
     }
 }
 
@@ -329,6 +342,43 @@ export class MessageTemplateClient extends Client {
      */
     list(params: any): Promise<any> {
         return this.request.get('/v1/template/list', params)
+
+    }
+}
+
+
+export class MessagePushRuleClient extends Client {
+    /**
+     * 创建消息推送规则
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/message-rule-config', params);
+    }
+
+    /**
+     * 更新消息推送规则
+     * @param template_code
+     * @param params
+     */
+    update(template_code: string, params: any): Promise<any> {
+        return this.request.put(`/v1/message-rule-config/${template_code}`, params);
+    }
+
+    /**
+     * 查询消息推送规则
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/message-rule-config', params)
+    }
+
+    /**
+     * 查询消息推送规则列表
+     * @param params
+     */
+    list(params: any): Promise<any> {
+        return this.request.get('/v1/message-rule-config/list', params)
 
     }
 }

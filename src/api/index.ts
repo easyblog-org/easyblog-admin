@@ -1,6 +1,6 @@
 import {
     AccountClient, HeaderImageClient,
-    LoginClient, MessageTemplateClient,
+    LoginClient, MessagePushRuleClient, MessageTemplateClient,
     MxnzpClient,
     OpenApiClient, PhoneAreaClient,
     RolesClient,
@@ -16,5 +16,6 @@ export let loginClient: LoginClient = new LoginClient()
 export let headerClient: HeaderImageClient = new HeaderImageClient()
 export let phoneAreaClient: PhoneAreaClient = new PhoneAreaClient()
 export let messageTemplateClient: MessageTemplateClient = new MessageTemplateClient()
+export let messagePushRuleClient: MessagePushRuleClient = new MessagePushRuleClient()
 export let mxnzpClient: MxnzpClient = new MxnzpClient()
 export let openApiClient: OpenApiClient = new OpenApiClient()

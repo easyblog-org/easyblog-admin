@@ -9,8 +9,9 @@
               <el-select v-model="formInline.query_key" placeholder="用户名" style="width: 120px"
                          @change="handleQueryKeyChange">
                 <el-option label="模板编号" value="template_code"/>
-                <el-option label="模块名" value="business_module"/>
-                <el-option label="事件名" value="business_event"/>
+                <el-option label="模块名" value="business_modules"/>
+                <el-option label="事件名" value="business_events"/>
+                <el-option label="推送渠道" value="channel"/>
                 <el-option label="优先级" value="priority"/>
               </el-select>
             </template>
@@ -32,7 +33,7 @@
         </el-button>
       </div>
       <div class="table-inner">
-        <el-table v-loading="loading" :data="userList" style="width: 100%; height: 100%" border>
+        <el-table v-loading="loading" :data="pushConfigList" style="width: 100%; height: 100%" border>
           <el-table-column prop="business_module" label="所属模块" align="center" width="100"/>
           <el-table-column prop="business_event" label="消息/事件" align="center" width="120"/>
           <el-table-column prop="template_code" label="模板编号" align="center" width="120"/>
@@ -46,10 +47,10 @@
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" align="center" width="180"/>
           <el-table-column prop="update_time" label="更新时间" align="center" width="180"/>
-          <el-table-column prop="operator" label="操作" width="200px" align="center" fixed="right">
+          <el-table-column prop="operator" label="操作" width="260px" align="center" fixed="right">
             <template #default="scope">
               <el-button type="primary" size="small" icon="Edit" @click="showConfigDetails(scope.row)">
-                配置详情
+                详情
               </el-button>
               <el-button type="primary" size="small" icon="Edit" @click="editHandler(scope.row)">
                 编辑
@@ -64,7 +65,7 @@
       <div class="pagination">
         <el-pagination
             :currentPage="currentPage"
-            :page-size="userListRequestParam.limit"
+            :page-size="pushConfigListRequestParam.limit"
             background
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
@@ -77,13 +78,13 @@
 
 
   <PushConfigDetailDialog ref="pushConfigDetailDialog"/>
-  <PushConfigModifyDrawer @refresh="loadMesageConfigList" ref="pushConfigDrawer"></PushConfigModifyDrawer>
+  <PushConfigModifyDrawer @refresh="loadMessagePushConfigList" ref="pushConfigDrawer"></PushConfigModifyDrawer>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
-import {userClient} from '@/api'
+import {messagePushRuleClient, userClient} from '@/api'
 import PushConfigDetailDialog from "@/views/message/config/components/PushConfigDetailDialog.vue";
 import PushConfigModifyDrawer from "@/views/message/config/components/PushConfigModifyDrawer.vue";
 
@@ -96,50 +97,63 @@ const formInline = reactive({
   query_value: null
 })
 const loading = ref(true)
-const userList = ref([])
+const pushConfigList = ref([])
 const currentPage = ref(1)
 const total = ref(0)
-const userListRequestParam = {
+const pushConfigListRequestParam = {
   template_code: null,
-  business_event: null,
-  business_module: null,
+  business_events: null,
+  business_modules: null,
+  channel: null,
   limit: 10,
   offset: 0,
 }
 
 const onSearch = () => {
-  if (formInline.query_key === 'business_module') {
-    userListRequestParam.business_event = formInline.query_value
-  } else if (formInline.query_key === 'business_event') {
-    userListRequestParam.business_event = formInline.query_value
+  if (formInline.query_key === 'business_modules') {
+    pushConfigListRequestParam.business_modules = formInline.query_value
+  } else if (formInline.query_key === 'business_events') {
+    pushConfigListRequestParam.business_events = formInline.query_value
   } else if (formInline.query_key === 'template_code') {
-    userListRequestParam.template_code = formInline.query_value
+    pushConfigListRequestParam.template_code = formInline.query_value
+  } else if (formInline.query_key === 'channel') {
+    pushConfigListRequestParam.channel = formInline.query_value
   }
   loading.value = true
-  loadMesageConfigList()
+  loadMessagePushConfigList()
 }
 
 /**
  * 处理查询主键变更事件
  */
 const handleQueryKeyChange = (val: string) => {
-  if (formInline.query_key === 'business_module') {
-    userListRequestParam.business_event = null
-    userListRequestParam.template_code = null
-  } else if (formInline.query_key === 'business_event') {
-    userListRequestParam.business_module = null
-    userListRequestParam.template_code = null
+  if (formInline.query_key === 'business_modules') {
+    pushConfigListRequestParam.business_events = null
+    pushConfigListRequestParam.template_code = null
+    pushConfigListRequestParam.business_events = null
+  } else if (formInline.query_key === 'business_events') {
+    pushConfigListRequestParam.business_modules = null
+    pushConfigListRequestParam.template_code = null
+    pushConfigListRequestParam.business_events = null
   } else if (formInline.query_key === 'template_code') {
-    userListRequestParam.business_event = null
-    userListRequestParam.business_module = null
+    pushConfigListRequestParam.business_events = null
+    pushConfigListRequestParam.business_modules = null
+    pushConfigListRequestParam.business_events = null
+  } else if (formInline.query_key === 'channel') {
+    pushConfigListRequestParam.business_events = null
+    pushConfigListRequestParam.business_modules = null
+    pushConfigListRequestParam.template_code = null
   }
+
 }
 
 const reset = (formEl: FormInstance | undefined) => {
-  userListRequestParam.business_event = null
-  userListRequestParam.business_module = null
-  userListRequestParam.template_code = null
-  loadMesageConfigList()
+  pushConfigListRequestParam.business_events = null
+  pushConfigListRequestParam.business_modules = null
+  pushConfigListRequestParam.template_code = null
+  pushConfigListRequestParam.channel = null
+  formInline.query_value = null
+  loadMessagePushConfigList()
 }
 
 const addHandler = () => {
@@ -162,7 +176,7 @@ const showConfigDetails = (row: {}) => {
  */
 const switchMessageConfigStatus = (key: string, enabled: number) => {
   //编辑用户信息
-  userClient.update(key, {
+  messagePushRuleClient.update(key, {
     active: enabled,
   }).then(() => {
     ElMessage({
@@ -217,10 +231,10 @@ const changeStatus = (row) => {
  * @param pageSize
  */
 const handleSizeChange = (pageSize: number) => {
-  userListRequestParam.limit = pageSize;
-  userListRequestParam.offset = 0
+  pushConfigListRequestParam.limit = pageSize;
+  pushConfigListRequestParam.offset = 0
   currentPage.value = 1
-  loadMesageConfigList()
+  loadMessagePushConfigList()
 }
 
 /**
@@ -228,20 +242,20 @@ const handleSizeChange = (pageSize: number) => {
  * @param pageNo
  */
 const handleCurrentChange = (pageNo: number) => {
-  userListRequestParam.offset = (pageNo - 1) * userListRequestParam.limit
-  loadMesageConfigList()
+  pushConfigListRequestParam.offset = (pageNo - 1) * pushConfigListRequestParam.limit
+  loadMessagePushConfigList()
   currentPage.value = pageNo
 }
 
 /**
  * 加载列表数据
  */
-const loadMesageConfigList = () => {
+const loadMessagePushConfigList = () => {
   loading.value = true
-  return userClient.list(userListRequestParam).then((resp) => {
+  return messagePushRuleClient.list(pushConfigListRequestParam).then((resp) => {
     const list = resp.data
-    //total.value = resp.total
-    //userList.value = list
+    total.value = resp.total
+    pushConfigList.value = list
     console.log(list)
   }).finally(() => {
     loading.value = false
@@ -249,7 +263,7 @@ const loadMesageConfigList = () => {
 }
 
 onMounted(() => {
-  loadMesageConfigList()
+  loadMessagePushConfigList()
 })
 </script>
 <style lang="scss" scoped>

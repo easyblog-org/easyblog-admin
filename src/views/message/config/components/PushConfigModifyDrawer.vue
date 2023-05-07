@@ -16,6 +16,20 @@
       <el-form-item label="优先级" prop="priority">
         <el-input v-model="ruleForm.priority" placeholder="请输入优先级" :disabled="isEdit"/>
       </el-form-item>
+      <el-form-item label="发送渠道" prop="channel">
+        <el-select
+            v-model="ruleForm.channel"
+            placeholder="请选择"
+            style="width: 100%"
+        >
+          <el-option
+              v-for="item in messagePushChannelList"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="模版" prop="template_code">
         <el-select
             v-model="ruleForm.template_code"
@@ -29,6 +43,24 @@
               :value="item.template_code"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="参数取值方式" prop="template_value_type">
+        <el-select
+            v-model="ruleForm.template_value_type"
+            @change="changeTemplateValueUrlInputStatus"
+            placeholder="请选择"
+            style="width: 100%"
+        >
+          <el-option
+              v-for="item in messageTemplateValueTypeList"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-show="showTemplateValueUrlInput" label="参数取值URL" prop="template_value_url">
+        <el-input v-model="ruleForm.template_value_url" placeholder="请输入参数取值URL"/>
       </el-form-item>
       <el-form-item label="参数配置" prop="configs">
         <el-tag
@@ -126,7 +158,8 @@
 <script lang="ts" setup>
 import {onMounted, reactive, ref} from "vue";
 import {ElInput, ElMessage, FormInstance} from "element-plus";
-import {messageTemplateClient, staticClient} from "@/api";
+import {messagePushRuleClient, messageTemplateClient, staticClient} from "@/api";
+import {ErrorCodeType} from "@/api/ErrorCodeType";
 
 
 const emits = defineEmits<{
@@ -134,11 +167,14 @@ const emits = defineEmits<{
 }>();
 const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref(false)
+const showTemplateValueUrlInput = ref(false)
 const title = ref('添加消息规则')
 const isEdit = ref<boolean>(false)
 const loading = ref(true)
 const messageTemplateList = ref([])
+const messagePushChannelList = ref([])
 const messageConfigList = ref([])
+const messageTemplateValueTypeList = ref([])
 const ruleConfigDynamicTags = ref([])
 const configsFormRef = ref<FormInstance>()
 const dynamicConfigsForm = reactive<{
@@ -167,20 +203,30 @@ const ruleForm = reactive({
   group: null,
   priority: null,
   template_code: null,
-  configs: null
+  channel: null,
+  configs: null,
+  template_value_type: null,
+  template_value_url: null
 })
 
 const rules = reactive({
   business_module: [
     {required: true, message: '请输入所属模块名称', trigger: 'blur'},
-    {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+    {min: 1, max: 128, message: '长度在 1 到 128 个字符', trigger: 'blur'}
   ],
   business_event: [
     {required: true, message: '请输入事件/消息名称', trigger: 'blur'},
-    {min: 1, max: 20, message: '长度在 1 到 30 个字符', trigger: 'blur'}
+    {min: 1, max: 36, message: '长度在 1 到 36 个字符', trigger: 'blur'}
   ],
   template_code: [
-    {required: true, message: '请选择消息模板类型', trigger: 'change'}]
+    {required: true, message: '请选择消息模板类型', trigger: 'change'}],
+  channel: [
+    {required: true, message: '请选择消息发送渠道', trigger: 'change'}],
+  template_value_type: [
+    {required: true, message: '请选择参数取值方式', trigger: 'change'}],
+  template_value_url: [
+    {required: false, message: '请输入参数取值URL', trigger: 'blur', when: () => showTemplateValueUrlInput.value},
+    {min: 1, max: 256, message: '长度在 1 到 20 个字符', trigger: 'blur'}]
 })
 
 const show = (item = {}) => {
@@ -197,7 +243,14 @@ const show = (item = {}) => {
 
   loadAllMessageTemplateList()
   loadAllMsgConfigType()
+  loadAllMsgPushChannel()
+  loadAllMsgTemplateValueType()
   dialogVisible.value = true
+}
+
+const changeTemplateValueUrlInputStatus = () => {
+  if (!ruleForm.template_value_type) return
+  showTemplateValueUrlInput.value = ruleForm.template_value_type === 3 || ruleForm.template_value_type === 4
 }
 
 const handleRuleConfigClose = (tag: string) => {
@@ -233,6 +286,7 @@ const handleClose = () => {
 
 const handleSubmit = async (done: () => void) => {
   await ruleFormRef.value.validate(async (valid, fields) => {
+    console.log("提交数据......valid==>" + valid)
     if (valid) {
       loading.value = true
       //[{"type":"receiver","key":1,"value":"$.email","name":"email"}]
@@ -253,7 +307,7 @@ const handleSubmit = async (done: () => void) => {
  * 更新模板
  */
 const updateMessageRuleConfig = () => {
- /* messageTemplateClient.update(ruleForm.template_code, {}).then(() => {
+  messagePushRuleClient.update(ruleForm.template_code, {}).then(() => {
     ElMessage({
       message: '更新成功',
       type: 'success',
@@ -267,7 +321,7 @@ const updateMessageRuleConfig = () => {
       message: '更新失败',
       type: 'error',
     })
-  })*/
+  })
 }
 
 
@@ -275,7 +329,32 @@ const updateMessageRuleConfig = () => {
  * 创建模板
  */
 const createMessageRuleConfig = () => {
-  /*messageTemplateClient.create({}).then(() => {
+  //dynamicConfigsForm.domains: [{"type":"receiver","key":1,"value":"$.email","name":"email"}]
+  const messageParamConfigs = dynamicConfigsForm.domains.map(config => {
+    return {
+      "type": config.type,
+      "name": config.name,
+      "template_value_config": {
+        "type": ruleForm.template_value_type,
+        "expression": config.value,
+        "url": ruleForm.template_value_url,
+      }
+    }
+  });
+  messagePushRuleClient.create({
+    "message_rule_config": {
+      "business_module": ruleForm.business_module,
+      "business_event": ruleForm.business_event,
+      "template_code": ruleForm.template_code,
+      "priority": ruleForm.priority,
+      "channel": ruleForm.channel,
+      "msg_group": ruleForm.group,
+    },
+    "message_parameter_configs": messageParamConfigs
+  }).then((resp) => {
+
+    console.log("resp" + JSON.stringify(resp))
+
     ElMessage({
       message: '添加成功',
       type: 'success',
@@ -284,15 +363,16 @@ const createMessageRuleConfig = () => {
     dialogVisible.value = false
     //刷新父页面数据
     emits('refresh')
-  }).catch(() => {
+  }).catch((err) => {
     ElMessage({
-      message: '添加失败',
+      message: ErrorCodeType(err.code),
       type: 'error',
     })
-  })*/
+  })
 }
 
 const loadAllMessageTemplateList = () => {
+  // 查询已发布 & 未删除 的模板
   messageTemplateClient.list({
     status: 2,
     deleted: false
@@ -310,6 +390,30 @@ const loadAllMessageTemplateList = () => {
 const loadAllMsgConfigType = () => {
   staticClient.getAllMsgConfigType().then((resp) => {
     messageConfigList.value = resp
+    console.log(resp);
+  }).catch((err) => {
+    ElMessage({
+      message: err.message,
+      type: 'error',
+    })
+  })
+}
+
+const loadAllMsgPushChannel = () => {
+  staticClient.getAllMsgPushChannel().then((resp) => {
+    messagePushChannelList.value = resp
+    console.log(resp);
+  }).catch((err) => {
+    ElMessage({
+      message: err.message,
+      type: 'error',
+    })
+  })
+}
+
+const loadAllMsgTemplateValueType = () => {
+  staticClient.getAllMsgTemplateConfigValueType().then((resp) => {
+    messageTemplateValueTypeList.value = resp
     console.log(resp);
   }).catch((err) => {
     ElMessage({

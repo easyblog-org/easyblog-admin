@@ -29,8 +29,8 @@ const title = ref('消息规则详情')
 
 const ruleForm = reactive({
   template_code: null,
-  business_module: null,
-  business_event: null,
+  business_modules: null,
+  business_events: null,
   group: null,
   priority: null,
   configs: {},
