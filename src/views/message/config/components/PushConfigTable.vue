@@ -29,14 +29,22 @@
           <el-icon>
             <Plus/>
           </el-icon>
-          新增消息规则
+          新增推送规则
         </el-button>
       </div>
       <div class="table-inner">
         <el-table v-loading="loading" :data="pushConfigList" style="width: 100%; height: 100%" border>
-          <el-table-column prop="business_module" label="所属模块" align="center" width="100"/>
-          <el-table-column prop="business_event" label="消息/事件" align="center" width="120"/>
+          <el-table-column prop="business_module" label="业务模块" align="center" width="100"/>
+          <el-table-column prop="business_event" label="业务事件" align="center" width="120"/>
           <el-table-column prop="template_code" label="模板编号" align="center" width="120"/>
+          <el-table-column prop="channel" label="推送渠道" align="center" width="120">
+            <template #default="scope">
+              <el-tag v-if="scope.row.channel===10" class="mx-1" size="default" type="success">普通邮件</el-tag>
+              <el-tag v-if="scope.row.channel===11" class="mx-1" size="default" type="success">普通邮件</el-tag>
+              <el-tag v-if="scope.row.channel===20" class="mx-1" size="default" type="success">短信</el-tag>
+              <el-tag v-if="scope.row.channel===30" class="mx-1" size="default" type="success">微信通知</el-tag>
+            </template>
+           </el-table-column>
           <el-table-column prop="group" label="分组" align="center" width="120"/>
           <el-table-column prop="priority" label="优先级" align="center" width="120"/>
           <el-table-column prop="deleted" label="删除状态" align="center" width="120">
