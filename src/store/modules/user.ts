@@ -46,15 +46,14 @@ export const useUserStore = defineStore({
                         // @ts-ignore
                         this.initState(resp.data)
                         resolve(resp)
-                    } else {
-                        // @ts-ignore
-                        const errorMsg = ErrorCodeType(resp.code);
-                        ElMessage({
-                            message: errorMsg,
-                            type: 'warning',
-                        })
-                        reject(resp)
                     }
+                }).catch((resp) => {
+                    const errorMsg = ErrorCodeType(resp.code);
+                    ElMessage({
+                        message: errorMsg,
+                        type: 'warning',
+                    })
+                    reject(resp)
                 })
             })
         },

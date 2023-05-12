@@ -102,6 +102,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
         type: "success",
         duration: 3000
       });
+    }).catch(resp => {
+      console.log(resp)
+      loading.value = false
     }).finally(() => {
       loading.value = false
     })
