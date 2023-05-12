@@ -44,7 +44,6 @@ class HttpRequest {
             (response: AxiosResponse) => {
                 // 直接返回res，当然你也可以只返回res.data
                 // 系统如果有自定义code也可以在这里处理
-                console.log(JSON.stringify(response))
                 if (!response.data.success) {
                     if (response.data.code === 'auth_token_not_found' ||
                         response.data.code === 'auth_expired') {

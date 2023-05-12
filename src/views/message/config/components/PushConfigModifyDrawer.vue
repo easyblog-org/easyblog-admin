@@ -11,10 +11,10 @@
         <el-input v-model="ruleForm.business_event" placeholder="请输入事件/消息名称" :disabled="isEdit"/>
       </el-form-item>
       <el-form-item label="分组" prop="group">
-        <el-input v-model="ruleForm.group" placeholder="请输入分组名称" :disabled="isEdit"/>
+        <el-input v-model="ruleForm.group" placeholder="请输入分组名称"/>
       </el-form-item>
       <el-form-item label="优先级" prop="priority">
-        <el-input v-model="ruleForm.priority" placeholder="请输入优先级" :disabled="isEdit"/>
+        <el-input v-model="ruleForm.priority" placeholder="请输入优先级"/>
       </el-form-item>
       <el-form-item label="发送渠道" prop="channel">
         <el-select
@@ -63,21 +63,9 @@
         <el-input v-model="ruleForm.template_value_url" placeholder="请输入参数取值URL"/>
       </el-form-item>
       <el-form-item label="参数配置" prop="configs">
-        <el-tag
-            v-for="tag in ruleConfigDynamicTags"
-            :key="tag"
-            class="mx-1"
-            closable
-            :disable-transitions="false"
-            @close="handleRuleConfigClose(tag)"
-            v-if="isEdit"
-        >
-          {{ tag }}
-        </el-tag>
         <el-form
             ref="configsFormRef"
             :model="dynamicConfigsForm"
-            v-if="!isEdit"
         >
           <el-row v-for="(domain, index) in dynamicConfigsForm.domains" :gutter="10" :key="domain.key"
                   style="margin-bottom: 15px">
@@ -225,7 +213,7 @@ const rules = reactive({
   template_value_type: [
     {required: true, message: '请选择参数取值方式', trigger: 'change'}],
   template_value_url: [
-    {required: false, message: '请输入参数取值URL', trigger: 'blur', when: () => showTemplateValueUrlInput.value},
+    {required: true, message: '请输入参数取值URL', trigger: 'blur', when: () => showTemplateValueUrlInput.value},
     {min: 1, max: 256, message: '长度在 1 到 20 个字符', trigger: 'blur'}]
 })
 
@@ -233,12 +221,30 @@ const show = (item = {}) => {
   title.value = '添加消息规则'
   loading.value = true
   isEdit.value = false
+  console.log(JSON.stringify(item))
   if (item['template_code']) {
     title.value = '编辑消息规则'
     isEdit.value = true
     Object.keys(item).forEach((key) => {
       ruleForm[key] = item[key]
     })
+
+    let configs = ruleForm.configs;
+    if (configs !== undefined && configs !== null) {
+      let config = configs[0]
+      if (config !== undefined && config !== null) {
+        ruleForm.template_value_type = config.template_value_config.type
+        ruleForm.template_value_url = config.template_value_config.url
+      }
+
+      dynamicConfigsForm.domains = configs.map(cfg => {
+        return {
+          "type": cfg.type,
+          "name": cfg.name,
+          "value": cfg.template_value_config.expression
+        }
+      });
+    }
   }
 
   loadAllMessageTemplateList()
@@ -286,11 +292,10 @@ const handleClose = () => {
 
 const handleSubmit = async (done: () => void) => {
   await ruleFormRef.value.validate(async (valid, fields) => {
-    console.log("提交数据......valid==>" + valid)
     if (valid) {
       loading.value = true
       //[{"type":"receiver","key":1,"value":"$.email","name":"email"}]
-      console.log(JSON.stringify(dynamicConfigsForm.domains))
+      //console.log(JSON.stringify(dynamicConfigsForm.domains))
       if (isEdit.value) {
         //编辑消息规则
         updateMessageRuleConfig()
