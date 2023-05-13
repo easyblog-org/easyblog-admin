@@ -67,19 +67,31 @@
           <el-table-column prop="update_time" label="更新时间" align="center" width="180"/>
           <el-table-column prop="operator" label="操作" width="350px" align="center" fixed="right">
             <template #default="scope">
-              <el-button type="success" size="small" icon="Open" @click="release(scope.row)"
-                         :disabled="scope.row.status===2">
-                发布模板
-              </el-button>
-              <el-button color="#626aef" size="small" icon="View" @click="showTemplateDetails(scope.row)">
-                预览
-              </el-button>
               <el-button type="primary" size="small" icon="Edit" @click="editHandler(scope.row)">
                 编辑
               </el-button>
               <el-button @click="del(scope.row)" type="danger" size="small" icon="Delete">
                 删除
               </el-button>
+              <el-dropdown style="margin-left: 15px">
+                <span class="el-dropdown-link">
+                  <el-button type="primary" size="small">
+                   更多操作
+                     <el-icon class="el-icon--right">
+                    <arrow-down/>
+                  </el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="preview(scope.row)">预览模板</el-dropdown-item>
+                    <el-dropdown-item @click="release(scope.row)" :disabled="scope.row.status===2">发布模板
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="push(scope.row)" :disabled="scope.row.status===1">测试发送
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -100,17 +112,21 @@
 
   <TemplateModifyDrawer @refresh="loadTemplateList" ref="templateDrawer"/>
   <TemplateDetailDialog ref="templateDialog"/>
+  <TemplatePushDialog ref="templatePushDialog"/>
 </template>
 <script lang="ts" setup>
 import {ElMessageBox, ElMessage, FormInstance} from 'element-plus'
 import {Search} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
-import {messageTemplateClient} from '@/api'
+import {messagePushRecordClient, messageTemplateClient} from '@/api'
 import TemplateModifyDrawer from "@/views/message/template/components/TemplateModifyDrawer.vue";
 import TemplateDetailDialog from "@/views/message/template/components/TemplateDetailDialog.vue";
+import {ErrorCodeType} from "@/api/ErrorCodeType";
+import TemplatePushDialog from "@/views/message/template/components/TemplatePushDialog.vue";
 
 const templateDrawer = ref()
 const templateDialog = ref()
+const templatePushDialog = ref()
 const ruleFormRef = ref<FormInstance>()
 const formInline = reactive({
   query_key: 'name',
@@ -196,10 +212,10 @@ const editHandler = (row) => {
 }
 
 /**
- * 展示模板细节
+ * 预览模板
  * @param row
  */
-const showTemplateDetails = (row) => {
+const preview = (row) => {
   templateDialog.value.show(row)
 }
 
@@ -215,6 +231,21 @@ const release = (row) => {
     draggable: true,
   }).then(() => {
     switchTemplateStatus(row.template_code, 2)
+  })
+}
+
+/**
+ * 模板测试发送
+ * @param row
+ */
+const push = (row) => {
+  ElMessageBox.confirm('你确定要测试发布当前模板吗?', '温馨提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+    draggable: true,
+  }).then(() => {
+    templatePushDialog.value.show(row)
   })
 }
 

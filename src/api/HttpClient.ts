@@ -216,7 +216,7 @@ export class StaticClient extends Client {
     /**
      * 加载所有账号类型枚举
      */
-    getAllMessagePushStatus() {
+    getAllMessagePushStatus(): Promise<any> {
         return this.request.get('/v1/static/msg-push-status')
     }
 }
@@ -387,6 +387,17 @@ export class MessagePushRuleClient extends Client {
      */
     list(params: any): Promise<any> {
         return this.request.get('/v1/message-rule-config/list', params)
+
+    }
+
+    /**
+     * 查询级联列表
+     * @param params
+     */
+    cascader(template_code: string): Promise<any> {
+        return this.request.get('/v1/message-rule-config/cascader', {
+            "template_code": template_code
+        })
 
     }
 }

@@ -76,6 +76,9 @@ export const ErrorCodeType = function (code: string): string {
         case 'message_config_rule_exists':
             errMessage='相同消息推送配置已存在'
             break
+        case 'internal_error':
+            errMessage='系统错误'
+            break
         default:
             errMessage = `${code}`
     }

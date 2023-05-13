@@ -13,6 +13,38 @@
   text-align: center;
 }
 
+.tooltip-item {
+  width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.code-container {
+  height: 350px;
+}
+
+.code-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.code-view {
+
+}
+
+pre {
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: auto;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .m-user-table {
   display: flex;
   flex-direction: column;
