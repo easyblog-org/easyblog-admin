@@ -157,6 +157,7 @@ export class AccountClient extends Client {
  * 静态常量Client
  */
 export class StaticClient extends Client {
+
     /**
      * 加载所有账号类型枚举
      */
@@ -210,6 +211,13 @@ export class StaticClient extends Client {
      */
     getAllMsgTemplateConfigValueType(): Promise<any> {
         return this.request.get('/v1/static/msg-template-value-type')
+    }
+
+    /**
+     * 加载所有账号类型枚举
+     */
+    getAllMessagePushStatus() {
+        return this.request.get('/v1/static/msg-push-status')
     }
 }
 
@@ -379,6 +387,42 @@ export class MessagePushRuleClient extends Client {
      */
     list(params: any): Promise<any> {
         return this.request.get('/v1/message-rule-config/list', params)
+
+    }
+}
+
+export class MessagePushRecordClient extends Client {
+    /**
+     * 创建推送消息
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/v1/message', params);
+    }
+
+    /**
+     * 更新推送消息信息
+     * @param template_code
+     * @param params
+     */
+    update(id: number, params: any): Promise<any> {
+        return this.request.put(`/v1/message/${id}`, params);
+    }
+
+    /**
+     * 查询推送消息记录详情
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/v1/message', params)
+    }
+
+    /**
+     * 查询消息推送记录列表
+     * @param params
+     */
+    list(params: any): Promise<any> {
+        return this.request.get('/v1/message/list', params)
 
     }
 }
