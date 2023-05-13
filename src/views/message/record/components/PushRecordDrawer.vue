@@ -7,19 +7,19 @@
       <el-form-item label="业务ID" prop="business_id">
         <el-input v-model="ruleForm.business_id" disabled/>
       </el-form-item>
-      <el-form-item label="业务模块" prop="buziness_module">
-        <el-input v-model="ruleForm.buziness_module" disabled/>
+      <el-form-item label="业务模块" prop="business_module">
+        <el-input v-model="ruleForm.business_module" disabled/>
       </el-form-item>
-      <el-form-item label="业务事件" prop="buziness_event">
-        <el-input v-model="ruleForm.buziness_event" disabled/>
+      <el-form-item label="业务事件" prop="business_event">
+        <el-input v-model="ruleForm.business_event" disabled/>
       </el-form-item>
       <el-form-item label="推送渠道" prop="channel">
         <el-input v-model="ruleForm.channel" disabled/>
       </el-form-item>
-       <el-form-item label="重试次数" prop="retry_times">
+      <el-form-item label="重试次数" prop="retry_times">
         <el-input v-model="ruleForm.retry_times" disabled/>
       </el-form-item>
-       <el-form-item label="推送状态" prop="status">
+      <el-form-item label="推送状态" prop="status">
         <el-select
             v-model="ruleForm.status"
             placeholder="请选择"
@@ -36,8 +36,8 @@
       <el-form-item label="失败原因" prop="fail_reason">
         <el-input v-model="ruleForm.fail_reason" placeholer="请输入推送原因"/>
       </el-form-item>
-      <el-form-item label="业务消息" prop="msg_content">
-        <el-input v-model="ruleForm.msg_content"
+      <el-form-item label="业务消息" prop="business_message">
+        <el-input v-model="ruleForm.business_message"
                   :rows="8"
                   :autosize="{ minRows: 8, maxRows: 30 }"
                   type="textarea"
@@ -56,6 +56,7 @@
 import {onMounted, reactive, ref} from "vue";
 import {ElMessage, FormInstance} from "element-plus";
 import {messageTemplateClient, staticClient} from "@/api";
+import formatJson from "@/utils/codeFormatter";
 
 const emits = defineEmits<{
   (event: 'refresh'): void
@@ -64,18 +65,19 @@ const ruleFormRef = ref<FormInstance>()
 const dialogVisible = ref(false)
 const title = ref('编辑推送记录')
 const loading = ref(true)
-const messagePushStatusList=ref([])
+const messagePushStatusList = ref([])
+
 
 const ruleForm = reactive({
-  id:null,
+  id: null,
   business_id: null,
-  buziness_module: null,
-  buziness_event: null,
+  business_module: null,
+  business_event: null,
   channel: null,
   retry_times: null,
   status: null,
   fail_reason: null,
-  msg_content:null
+  business_message: null
 })
 
 const rules = reactive({
@@ -86,7 +88,7 @@ const rules = reactive({
     {required: true, message: '请输入失败原因', trigger: 'blur'},
     {min: 1, max: 1000, message: '长度在 1 到 1000 个字符', trigger: 'blur'}
   ],
-  msg_content: [
+  business_message: [
     {required: true, message: '请输入模板内容', trigger: 'blur'},
     {min: 1, max: 20000, message: '长度在 1 到 20000 个字符', trigger: 'blur'}
   ]
@@ -95,9 +97,16 @@ const rules = reactive({
 const show = (item = {}) => {
   loading.value = true
   title.value = '编辑推送记录'
-    Object.keys(item).forEach((key) => {
+  console.log(item)
+  Object.keys(item).forEach((key) => {
+    if (key === 'business_message') {
+      ruleForm[key] = formatJson(item[key])
+    } else {
       ruleForm[key] = item[key]
-    })
+    }
+  })
+
+  loadMessagePushStatusList()
   dialogVisible.value = true
 }
 
@@ -151,10 +160,9 @@ const updatePushRecord = () => {
 /**
  * 加载消息推送状态枚举
  */
-const loadMessagePushStatusList=()=>{
-    staticClient.getAllMessagePushStatus().then((resp) => {
-    messagePushStatusList.value=resp
-    console.log(resp);
+const loadMessagePushStatusList = () => {
+  staticClient.getAllMessagePushStatus().then((resp) => {
+    messagePushStatusList.value = resp
   }).catch((err) => {
     ElMessage({
       message: err.message,

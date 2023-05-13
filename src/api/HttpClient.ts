@@ -216,7 +216,7 @@ export class StaticClient extends Client {
     /**
      * 加载所有账号类型枚举
      */
-    getAllMessagePushStatus() {
+    getAllMessagePushStatus(): Promise<any> {
         return this.request.get('/v1/static/msg-push-status')
     }
 }
