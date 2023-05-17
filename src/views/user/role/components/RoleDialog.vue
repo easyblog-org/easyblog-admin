@@ -4,9 +4,6 @@
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入用户名"/>
       </el-form-item>
-      <el-form-item label="角色标识" prop="code" v-if="!isEdit">
-        <el-input v-model="ruleForm.code" placeholder="请输入角色标识"/>
-      </el-form-item>
       <el-form-item label="角色描述" prop="desc">
         <el-input v-model="ruleForm.description" placeholder="请输入角色描述"/>
       </el-form-item>
@@ -43,15 +40,12 @@ const emits = defineEmits<{
 const rules = reactive({
   name: [
     {required: true, message: '请输入角色名称', trigger: 'blur'},
-    {min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur'},
-  ],
-  code: [{required: true, message: '请输入角色表示', trigger: 'blur'}],
-  enabled: [{required: true, message: '请选择角色是否启用', trigger: 'change'}]
+    {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'},
+  ]
 })
 
 const ruleForm = reactive({
   name: null,
-  code: null,
   enabled: true,
   description: null
 })
