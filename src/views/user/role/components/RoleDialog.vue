@@ -46,6 +46,7 @@ const rules = reactive({
 
 const ruleForm = reactive({
   name: null,
+  code: null,
   enabled: true,
   description: null
 })
@@ -75,7 +76,7 @@ const handleClose = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
       if (isEdit.value) {
-        roleClient.update(ruleForm.code,{
+        roleClient.update(ruleForm.code, {
           name: ruleForm.name,
           enabled: ruleForm.enabled,
           description: ruleForm.description
