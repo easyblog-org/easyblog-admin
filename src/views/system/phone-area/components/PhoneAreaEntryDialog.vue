@@ -78,7 +78,8 @@ function close() {
 
 const show = (item = {}) => {
   title.value = '新增国际冠码与国码'
-  if (item['id']) {
+  console.log(JSON.stringify(item))
+  if (item['code']) {
     isEdit.value = true
     title.value = '编辑国际冠码与国码'
     Object.keys(item).forEach(key => {

@@ -72,7 +72,7 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
             // 代理跨域
             proxy: {
                 '/api': {
-                    target: process.env.NODE_ENV === 'production' ? 'https://khaos.easyblog.top' : 'http://localhost:8888',
+                    target: process.env.NODE_ENV === 'production' ? 'https://api.easyblog.top' : 'http://localhost:8001',
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                 },

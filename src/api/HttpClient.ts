@@ -24,7 +24,7 @@ export class UserClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/user', params)
+        return this.request.get('/admin/v1/user', params)
     }
 
     /**
@@ -32,7 +32,7 @@ export class UserClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/user/list', params)
+        return this.request.get('/admin/v1/user/list', params)
     }
 
     /**
@@ -40,7 +40,7 @@ export class UserClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/user', params)
+        return this.request.post('/admin/v1/user', params)
     }
 
     /**
@@ -49,7 +49,7 @@ export class UserClient extends Client {
      * @param params
      */
     update(code: string, params: any): Promise<any> {
-        return this.request.put('/v1/user/' + code, params)
+        return this.request.put('/admin/v1/user/' + code, params)
     }
 }
 
@@ -63,7 +63,7 @@ export class RolesClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/roles', params)
+        return this.request.get('/admin/v1/roles', params)
     }
 
     /**
@@ -71,7 +71,7 @@ export class RolesClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/roles/list', params)
+        return this.request.get('/admin/v1/roles/list', params)
     }
 
     /**
@@ -79,7 +79,7 @@ export class RolesClient extends Client {
      * @param params
      */
     listAll(params: any): Promise<any> {
-        return this.request.get('/v1/roles/all', params)
+        return this.request.get('/admin/v1/roles/all', params)
     }
 
     /**
@@ -87,7 +87,7 @@ export class RolesClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/roles', params)
+        return this.request.post('/admin/v1/roles', params)
     }
 
     /**
@@ -96,7 +96,7 @@ export class RolesClient extends Client {
      * @param params
      */
     update(code: string, params: any): Promise<any> {
-        return this.request.put('/v1/roles/' + code, params)
+        return this.request.put('/admin/v1/roles/' + code, params)
     }
 }
 
@@ -110,7 +110,7 @@ export class AccountClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/account', params)
+        return this.request.get('/admin/v1/account', params)
     }
 
     /**
@@ -118,7 +118,7 @@ export class AccountClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/account/list', params)
+        return this.request.get('/admin/v1/account/list', params)
     }
 
     /**
@@ -126,7 +126,7 @@ export class AccountClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/account', params)
+        return this.request.post('/admin/v1/account', params)
     }
 
     /**
@@ -135,7 +135,7 @@ export class AccountClient extends Client {
      * @param params
      */
     update(accountId: string, params: any): Promise<any> {
-        return this.request.put('/v1/account/' + accountId, params)
+        return this.request.put('/admin/v1/account/' + accountId, params)
     }
 
     /**
@@ -146,7 +146,7 @@ export class AccountClient extends Client {
      * @param credential    密码
      */
     updateByIdentityType(userId: number, identityType: number, identifier?: string, credential?: string) {
-        return this.request.put('/v1/account/' + userId + '/' + identityType, {
+        return this.request.put('/admin/v1/account/' + userId + '/' + identityType, {
             identifier: identifier,
             credential: credential
         })
@@ -228,7 +228,7 @@ export class LoginClient extends Client {
      * @param params
      */
     login(params: any): Promise<any> {
-        return this.request.post('/v1/auth/login', params)
+        return this.request.post('/admin/v1/auth/login', params)
     }
 
     /**
@@ -236,14 +236,14 @@ export class LoginClient extends Client {
      * @param params
      */
     logout(): Promise<any> {
-        return this.request.post('/v1/auth/logout')
+        return this.request.post('/admin/v1/auth/logout')
     }
 
     /**
      * 刷新登录信息
      */
     refresh(params: any): Promise<any> {
-        return this.request.get('/v1/auth/refresh', params)
+        return this.request.get('/admin/v1/auth/refresh', params)
     }
 
     /**
@@ -251,7 +251,7 @@ export class LoginClient extends Client {
      * @param params
      */
     modifyPassword(params: any) {
-        return this.request.post('/v1/auth/modify-pwd', params)
+        return this.request.post('/admin/v1/auth/modify-pwd', params)
     }
 
     /**
@@ -259,7 +259,7 @@ export class LoginClient extends Client {
      * @param params
      */
     loginLogs(params: any): Promise<any> {
-        return this.request.get('/v1/auth/logs', params)
+        return this.request.get('/admin/v1/auth/logs', params)
     }
 }
 
@@ -269,7 +269,7 @@ export class HeaderImageClient extends Client {
      * @param params
      */
     save(params: any): Promise<any> {
-        return this.request.post('/v1/header-image', params)
+        return this.request.post('/admin/v1/header-image', params)
     }
 
     /**
@@ -277,7 +277,7 @@ export class HeaderImageClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/header-image', params)
+        return this.request.get('/admin/v1/header-image', params)
     }
 }
 
@@ -287,7 +287,7 @@ export class PhoneAreaClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/phone-area', params);
+        return this.request.post('/admin/v1/phone-area', params);
     }
 
     /**
@@ -296,7 +296,7 @@ export class PhoneAreaClient extends Client {
      * @param params
      */
     update(phone_area_code: number, params: any): Promise<any> {
-        return this.request.put(`/v1/phone-area/${phone_area_code}`, params);
+        return this.request.put(`/admin/v1/phone-area/${phone_area_code}`, params);
     }
 
     /**
@@ -304,7 +304,7 @@ export class PhoneAreaClient extends Client {
      * @param params
      */
     queryPhoneAreaCodeMap(params: any): Promise<any> {
-        return this.request.get('/v1/phone-area/tree', params)
+        return this.request.get('/admin/v1/phone-area/tree', params)
     }
 
     /**
@@ -312,7 +312,7 @@ export class PhoneAreaClient extends Client {
      * @param params
      */
     deleteByIds(params: any): Promise<any> {
-        return this.request.delete('/v1/phone-area', params)
+        return this.request.delete('/admin/v1/phone-area', params)
 
     }
 }
@@ -324,7 +324,7 @@ export class MessageTemplateClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/template', params);
+        return this.request.post('/admin/v1/template', params);
     }
 
     /**
@@ -333,7 +333,7 @@ export class MessageTemplateClient extends Client {
      * @param params
      */
     update(template_code: string, params: any): Promise<any> {
-        return this.request.put(`/v1/template/${template_code}`, params);
+        return this.request.put(`/admin/v1/template/${template_code}`, params);
     }
 
     /**
@@ -341,7 +341,7 @@ export class MessageTemplateClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/template', params)
+        return this.request.get('/admin/v1/template', params)
     }
 
     /**
@@ -349,7 +349,7 @@ export class MessageTemplateClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/template/list', params)
+        return this.request.get('/admin/v1/template/list', params)
 
     }
 }
@@ -361,7 +361,7 @@ export class MessagePushRuleClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/message-rule-config', params);
+        return this.request.post('/admin/v1/message-rule-config', params);
     }
 
     /**
@@ -370,7 +370,7 @@ export class MessagePushRuleClient extends Client {
      * @param params
      */
     update(template_code: string, params: any): Promise<any> {
-        return this.request.put(`/v1/message-rule-config/${template_code}`, params);
+        return this.request.put(`/admin/v1/message-rule-config/${template_code}`, params);
     }
 
     /**
@@ -378,7 +378,7 @@ export class MessagePushRuleClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/message-rule-config', params)
+        return this.request.get('/admin/v1/message-rule-config', params)
     }
 
     /**
@@ -386,7 +386,7 @@ export class MessagePushRuleClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/message-rule-config/list', params)
+        return this.request.get('/admin/v1/message-rule-config/list', params)
 
     }
 
@@ -395,7 +395,7 @@ export class MessagePushRuleClient extends Client {
      * @param params
      */
     cascader(template_code: string): Promise<any> {
-        return this.request.get('/v1/message-rule-config/cascader', {
+        return this.request.get('/admin/v1/message-rule-config/cascader', {
             "template_code": template_code
         })
 
@@ -408,7 +408,7 @@ export class MessagePushRecordClient extends Client {
      * @param params
      */
     create(params: any): Promise<any> {
-        return this.request.post('/v1/message', params);
+        return this.request.post('/admin/v1/message', params);
     }
 
     /**
@@ -417,7 +417,7 @@ export class MessagePushRecordClient extends Client {
      * @param params
      */
     update(id: number, params: any): Promise<any> {
-        return this.request.put(`/v1/message/${id}`, params);
+        return this.request.put(`/admin/v1/message/${id}`, params);
     }
 
     /**
@@ -425,7 +425,7 @@ export class MessagePushRecordClient extends Client {
      * @param params
      */
     details(params: any): Promise<any> {
-        return this.request.get('/v1/message', params)
+        return this.request.get('/admin/v1/message', params)
     }
 
     /**
@@ -433,7 +433,7 @@ export class MessagePushRecordClient extends Client {
      * @param params
      */
     list(params: any): Promise<any> {
-        return this.request.get('/v1/message/list', params)
+        return this.request.get('/admin/v1/message/list', params)
 
     }
 }
