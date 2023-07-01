@@ -230,7 +230,20 @@ const release = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchTemplateStatus(row.template_code, 2)
+    //编辑用户信息
+    messageTemplateClient.updateStatus(row.template_code, 2).then(() => {
+      ElMessage({
+        message: '更新成功',
+        type: 'success',
+      })
+    }).catch(() => {
+      ElMessage({
+        message: '更新失败',
+        type: 'error',
+      })
+    }).finally(() => {
+      loadTemplateList()
+    })
   })
 }
 
@@ -251,29 +264,6 @@ const push = (row) => {
 
 
 /**
- * 更新模板状态
- */
-const switchTemplateStatus = (code: string, status: number, deleted?: boolean) => {
-  //编辑用户信息
-  messageTemplateClient.update(code, {
-    status: status,
-    deleted: deleted
-  }).then(() => {
-    ElMessage({
-      message: '更新成功',
-      type: 'success',
-    })
-  }).catch(() => {
-    ElMessage({
-      message: '更新失败',
-      type: 'error',
-    })
-  }).finally(() => {
-    loadTemplateList()
-  })
-}
-
-/**
  * 删除用户
  * @param row
  */
@@ -284,7 +274,21 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchTemplateStatus(row.template_code, null, true)
+    messageTemplateClient.update(row.template_code, {
+      deleted: true
+    }).then(() => {
+      ElMessage({
+        message: '更新成功',
+        type: 'success',
+      })
+    }).catch(() => {
+      ElMessage({
+        message: '更新失败',
+        type: 'error',
+      })
+    }).finally(() => {
+      loadTemplateList()
+    })
   }).finally(() => {
     loadTemplateList()
   })

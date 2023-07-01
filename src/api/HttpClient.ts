@@ -337,6 +337,15 @@ export class MessageTemplateClient extends Client {
     }
 
     /**
+     * 更新消息模板状态
+     * @param template_code
+     * @param status
+     */
+    updateStatus(template_code: string, status: number): Promise<any> {
+        return this.request.put(`/admin/v1/template/${template_code}/${status}`);
+    }
+
+    /**
      * 查询消息模板
      * @param params
      */

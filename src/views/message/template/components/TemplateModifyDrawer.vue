@@ -113,6 +113,7 @@ const show = (item = {}) => {
   title.value = '添加模板'
   loading.value = true
   isEdit.value = false
+  console.log(JSON.stringify(item))
   if (item['template_code']) {
     title.value = '编辑模板'
     isEdit.value = true
