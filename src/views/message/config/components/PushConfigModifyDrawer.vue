@@ -186,6 +186,7 @@ interface ConfigDomainItem {
 }
 
 const ruleForm = reactive({
+  id:null,
   business_module: null,
   business_event: null,
   group: null,
@@ -212,9 +213,9 @@ const rules = reactive({
     {required: true, message: '请选择消息发送渠道', trigger: 'change'}],
   template_value_type: [
     {required: true, message: '请选择参数取值方式', trigger: 'change'}],
-  template_value_url: [
-    {required: true, message: '请输入参数取值URL', trigger: 'blur', when: () => showTemplateValueUrlInput.value},
-    {min: 1, max: 256, message: '长度在 1 到 20 个字符', trigger: 'blur'}]
+  // template_value_url: [
+  //   {required: true, message: '请输入参数取值URL', trigger: 'blur', when: () => showTemplateValueUrlInput.value},
+  //   {min: 1, max: 256, message: '长度在 1 到 20 个字符', trigger: 'blur'}]
 })
 
 const show = (item = {}) => {
@@ -295,7 +296,7 @@ const handleSubmit = async (done: () => void) => {
     if (valid) {
       loading.value = true
       //[{"type":"receiver","key":1,"value":"$.email","name":"email"}]
-      //console.log(JSON.stringify(dynamicConfigsForm.domains))
+      console.log(JSON.stringify(dynamicConfigsForm.domains))
       if (isEdit.value) {
         //编辑消息规则
         updateMessageRuleConfig()
@@ -304,6 +305,8 @@ const handleSubmit = async (done: () => void) => {
         createMessageRuleConfig()
       }
       loading.value = false
+    }else{
+      console.log("校验失败")
     }
   })
 }
@@ -312,7 +315,28 @@ const handleSubmit = async (done: () => void) => {
  * 更新模板
  */
 const updateMessageRuleConfig = () => {
-  messagePushRuleClient.update(ruleForm.template_code, {}).then(() => {
+
+  const messageParamConfigs = dynamicConfigsForm.domains.map(config => {
+    return {
+      "type": config.type,
+      "name": config.name,
+      "template_value_config": {
+        "type": ruleForm.template_value_type,
+        "expression": config.value,
+        "url": ruleForm.template_value_url,
+      }
+    }
+  });
+
+  messagePushRuleClient.update(ruleForm.id, {
+    "business_module": ruleForm.business_module,
+    "business_event": ruleForm.business_event,
+    "template_code": ruleForm.template_code,
+    "priority": ruleForm.priority,
+    "channel": ruleForm.channel,
+    "msg_group": ruleForm.group,
+    configs: messageParamConfigs
+  }).then(() => {
     ElMessage({
       message: '更新成功',
       type: 'success',

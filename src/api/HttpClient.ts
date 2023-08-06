@@ -378,8 +378,8 @@ export class MessagePushRuleClient extends Client {
      * @param template_code
      * @param params
      */
-    update(template_code: string, params: any): Promise<any> {
-        return this.request.put(`/admin/v1/message-rule-config/${template_code}`, params);
+    update(id: number, params: any): Promise<any> {
+        return this.request.put(`/admin/v1/message-rule-config/${id}`, params);
     }
 
     /**

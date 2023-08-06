@@ -182,7 +182,7 @@ const showConfigDetails = (row: {}) => {
 /**
  * 更新消息规则配置状态
  */
-const switchMessageConfigStatus = (key: string, enabled: number) => {
+const switchMessageConfigStatus = (key: number, enabled: number) => {
   //编辑用户信息
   messagePushRuleClient.update(key, {
     active: enabled,
@@ -210,7 +210,7 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    switchMessageConfigStatus(row['code'], 0)
+    switchMessageConfigStatus(row['id'], 0)
   })
 }
 
@@ -228,7 +228,7 @@ const changeStatus = (row) => {
         type: 'warning',
       },
   ).then(async () => {
-    switchMessageConfigStatus(row['code'], row.status ? 1 : 0)
+    switchMessageConfigStatus(row['id'], row.status ? 1 : 0)
   }).catch(() => {
     row.status = !row.status
   })
