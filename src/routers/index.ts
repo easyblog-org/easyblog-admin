@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory, RouteRecordRaw, createWebHashHistory, Router} from 'vue-router'
+import {createRouter, RouteRecordRaw, createWebHashHistory} from 'vue-router'
 import Layout from "@/layout/index.vue";
 
 // 扩展继承属性
@@ -10,27 +10,14 @@ interface extendRoute {
 import userRouter from './modules/user'
 import messageRouter from './modules/message'
 import articleRouter from './modules/article'
-import tableRouter from './modules/table'
-import excelRouter from './modules/excel'
 import systemRouter from './modules/system'
-import echartsRouter from './modules/echarts'
-import othersRouter from './modules/other'
-import externalLink from './modules/externalLink'
-import formRouter from './modules/form'
-import functionPageRouter from './modules/functionPage'
+
 
 // 异步组件
 export const asyncRoutes = [
     ...userRouter,
     ...messageRouter,
     ...articleRouter,
-    // ...echartsRouter,
-    // ...tableRouter,
-    // ...formRouter,
-    // ...othersRouter,
-    // ...functionPageRouter,
-    // ...excelRouter,
-    // ...externalLink,
     ...systemRouter
 ]
 
@@ -82,7 +69,7 @@ export const constantRoutes: Array<RouteRecordRaw & extendRoute> = [
                 meta: {title: '首页', icon: 'House', affix: true, role: ['other']}
             },
         ]
-    },
+    }
 ]
 
 /**

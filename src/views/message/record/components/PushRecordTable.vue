@@ -36,7 +36,13 @@
               <el-tag v-if="scope.row.channel===30" class="mx-1" size="default" type="success">微信通知</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="推送状态" align="center" width="120"/>
+          <el-table-column prop="status" label="推送状态" align="center" width="120">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status===1" class="mx-1" size="info" type="success">未发送</el-tag>
+              <el-tag v-if="scope.row.status===2" class="mx-1" size="success" type="success">发送成功</el-tag>
+              <el-tag v-if="scope.row.status===3" class="mx-1" size="danger" type="success">发送失败</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="retry_times" label="重试次数" align="center" width="120"/>
           <el-table-column prop="fail_reason" label="失败原因" align="center" width="256">
             <template #default="scope">
@@ -116,7 +122,7 @@ const pushRecordListRequestParam = {
 
 const onSearch = () => {
   if (formInline.query_key === 'status') {
-    pushRecordListRequestParam.status = formInline.query_value ? 1 : 0
+    pushRecordListRequestParam.status = formInline.query_value
   } else if (formInline.query_key === 'business_module') {
     pushRecordListRequestParam.business_module = formInline.query_value
   } else if (formInline.query_key === 'business_event') {
@@ -229,7 +235,6 @@ const loadPushRecordList = () => {
   return messagePushRecordClient.list(pushRecordListRequestParam).then((resp) => {
     const list = resp.data
     total.value = resp.total
-    console.log(list)
     pushRecordList.value = list
   }).finally(() => {
     loading.value = false
