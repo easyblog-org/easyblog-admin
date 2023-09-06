@@ -54,9 +54,6 @@ const queryClientIpAddr = () => {
       const location = resp.data.result.Country +' '+ resp.data.result.Province +' '+ resp.data.result.City
       sessionStorage.setItem(encrypt("location"), encrypt(location))
       sessionStorage.setItem(encrypt("ip"), encrypt(clientIp))
-
-      /*console.log("clientIp===>" + clientIp)
-      console.log("location===>" + location)*/
     })
   })
 }
