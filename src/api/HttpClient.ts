@@ -447,6 +447,42 @@ export class MessagePushRecordClient extends Client {
     }
 }
 
+export class ArticleClient extends Client {
+    /**
+     * 创建文章
+     * @param params
+     */
+    create(params: any): Promise<any> {
+        return this.request.post('/admin/v1/article', params);
+    }
+
+    /**
+     * 更新文章
+     * @param template_code
+     * @param params
+     */
+    update(id: number, params: any): Promise<any> {
+        return this.request.put(`/admin/v1/article/${id}`, params);
+    }
+
+    /**
+     * 查询文章详情
+     * @param params
+     */
+    details(params: any): Promise<any> {
+        return this.request.get('/admin/v1/article', params)
+    }
+
+    /**
+     * 查询文章列表
+     * @param params
+     */
+    list(params: any): Promise<any> {
+        return this.request.get('/admin/v1/article/list', params)
+
+    }
+}
+
 
 /**=======================================================================================================
  *  三方接口
