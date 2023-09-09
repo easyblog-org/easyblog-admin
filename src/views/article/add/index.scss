@@ -1,0 +1,39 @@
+.m-user {
+  display: flex;
+  flex-direction: row;
+}
+
+.search-bar {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+.el-select-dropdown__item {
+  text-align: center;
+}
+
+.el-input--default {
+  height: 38px;
+}
+
+.app-container {
+  height: 100%;
+  width: 100%;
+  padding: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.m-container-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: unset;
+  box-sizing: border-box;
+}
+
+.md-editor {
+  height: 600px !important;
+}

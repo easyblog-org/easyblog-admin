@@ -1,10 +1,20 @@
 <template>
   <PageWrapLayout class="mark-down">
-    <el-alert
-        title="Markdown 是基于 md-editor-v3 插件完成， 官方文档请查看 ：https://imzbf.github.io/md-editor-v3/index"
-        type="warning"
-        :closable="false"
-    />
+    <el-row>
+      <el-col :span="18">
+        <el-input
+            v-model="text"
+            maxlength="10"
+            placeholder="Please input"
+            show-word-limit
+            type="text"
+        />
+      </el-col>
+      <el-col>
+        <el-button type="primary" @click="submit">保存草稿</el-button>
+        <el-button type="primary" @click="submit">发布文章</el-button>
+      </el-col>
+    </el-row>
     <div class="" style="flex: 1">
       <md-editor v-model="text" />
     </div>

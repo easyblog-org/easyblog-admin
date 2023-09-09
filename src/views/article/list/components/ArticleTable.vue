@@ -23,6 +23,14 @@
       </el-form>
     </div>
     <div class="footer">
+      <div class="util">
+        <el-button type="primary" @click="addHandler">
+          <el-icon>
+            <Plus/>
+          </el-icon>
+          发布文章
+        </el-button>
+      </div>
       <div class="table-inner">
         <el-table v-loading="loading" :data="articleList" style="width: 100%; height: 100%" border>
           <el-table-column prop="code" label="文章ID" align="center" width="180"/>
@@ -103,6 +111,8 @@ const articleListRequestParam = {
   code: null,
   is_top: null,
   category: null,
+  orderCause: 'create_time',
+  orderDir: 'desc',
   limit: 10,
   offset: 0,
 }
@@ -144,6 +154,10 @@ const handleQueryKeyChange = (val: string) => {
   }
 }
 
+/**
+ * 重置搜索
+ * @param formEl
+ */
 const reset = (formEl: FormInstance | undefined) => {
   articleListRequestParam.title = null
   articleListRequestParam.code = null
@@ -152,6 +166,10 @@ const reset = (formEl: FormInstance | undefined) => {
   loadArticleList()
 }
 
+/**
+ * 查看文章详情
+ * @param row
+ */
 const showDetails = (row) => {
   router.replace({
     path: '/article/detail',
@@ -159,9 +177,13 @@ const showDetails = (row) => {
   })
 }
 
-
-const editHandler = (row) => {
-  //pushRecordDrawer.value.show(row)
+/**
+ * 创建文章
+ */
+const addHandler = () => {
+  router.replace({
+    path: '/article/add'
+  })
 }
 
 
@@ -177,7 +199,7 @@ const del = (row) => {
     type: 'warning',
     draggable: true,
   }).then(() => {
-    articleClient.update(row['id'], {
+    articleClient.update(row['code'], {
       deleted: true,
     }).then(() => {
       ElMessage({

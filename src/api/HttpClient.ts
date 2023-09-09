@@ -458,11 +458,11 @@ export class ArticleClient extends Client {
 
     /**
      * 更新文章
-     * @param template_code
+     * @param code
      * @param params
      */
-    update(id: number, params: any): Promise<any> {
-        return this.request.put(`/admin/v1/article/${id}`, params);
+    update(code: string, params: any): Promise<any> {
+        return this.request.put(`/admin/v1/article/${code}`, params);
     }
 
     /**
@@ -480,6 +480,14 @@ export class ArticleClient extends Client {
     list(params: any): Promise<any> {
         return this.request.get('/admin/v1/article/list', params)
 
+    }
+
+    /**
+     * 查询分类列表
+     * @param params
+     */
+    categoryList(params: any): Promise<any> {
+        return this.request.get('/admin/v1/article/category/list', params)
     }
 }
 

@@ -1,11 +1,12 @@
 <template>
   <div class="app-container m-user">
-    <ArticleTable/>
+    <ArticleEditPage/>
   </div>
 </template>
 
 <script lang="ts" setup>
-import ArticleTable from "@/views/article/list/components/ArticleTable.vue";
+
+import ArticleEditPage from "@/views/article/add/componets/ArticleEditPage.vue";
 </script>
 
 <style scoped lang="scss">

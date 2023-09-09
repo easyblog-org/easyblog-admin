@@ -31,6 +31,12 @@ const articleRouter = [{
             meta: { title: '文章详情' , icon: 'Document'},
             hidden: true
         },
+        {
+            path: 'add',
+            name: 'add',
+            component: () => import('@/views/article/add/index.vue'),
+            meta: { title: '创建文章' , icon: 'EditPen'}
+        },
     ]
 }]
 
