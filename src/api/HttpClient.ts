@@ -489,6 +489,32 @@ export class ArticleClient extends Client {
     categoryList(params: any): Promise<any> {
         return this.request.get('/admin/v1/article/category/list', params)
     }
+
+    /**
+     * 新增分类
+     * @param params
+     */
+    createCategory(params: any): Promise<any> {
+        return this.request.post('/admin/v1/article/category', params);
+    }
+
+    /**
+     * 更新分类
+     * @param code
+     * @param params
+     */
+    updateCategory(code: string, params: any): Promise<any> {
+        return this.request.put(`/admin/v1/article/category/${code}`, params);
+    }
+
+    /**
+     * 删除分类
+     * @param code
+     * @param password
+     */
+    deleteCategory(code: number, password: string): Promise<any> {
+        return this.request.post(`/admin/v1/article/category/${code}?pwd=${password}`);
+    }
 }
 
 
