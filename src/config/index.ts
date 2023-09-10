@@ -10,3 +10,6 @@ export const QINIU_CLOUD_CONFIG = {
     domain: 'image.easyblog.top',
     bucket_name: 'easyblog-pro'
 }
+
+// 批量删除密码
+export const BATCH_DELETE_PASSWORD='5Ce1wjvX2pHQ6ftAD5bX'

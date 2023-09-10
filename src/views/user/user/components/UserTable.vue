@@ -67,7 +67,7 @@
           </el-table-column>
           <el-table-column prop="user_current_images" label="用户头像" align="center" width="120">
             <template #default="scope">
-              <el-button type="primary" text @click="showUserHeadImage(scope.row.id)">
+              <el-button type="primary" text @click="showUserHeadImage(scope.row.code)">
                 查看
               </el-button>
             </template>
@@ -188,10 +188,10 @@ const showAccount = (accounts: any[]) => {
 
 /**
  * 展示用户头像
- * @param headImage
+ * @param user_code
  */
-const showUserHeadImage = (user_id: any) => {
-   userHeadImageDrawer.value.show(user_id)
+const showUserHeadImage = (user_code: any) => {
+   userHeadImageDrawer.value.show(user_code)
 }
 
 /**
@@ -283,7 +283,6 @@ const loadUserList = () => {
       list[i].status = list[i].active === 1
     }
     userList.value = list
-    console.log(list)
   }).finally(() => {
     loading.value = false
   })

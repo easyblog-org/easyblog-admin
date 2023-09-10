@@ -145,8 +145,8 @@ const del = (row) => {
     draggable: true,
   }).then(() => {
     phoneAreaClient.deleteByIds({
-      "phone_area_code_ids": row.id,
-      "password": "8RxuwjDS8Y"
+      "phone_area_code_ids": row.code,
+      "password": "5Ce1wjvX2pHQ6ftAD5bX"
     }).then((resp) => {
       if (!resp) return
       if (resp.success) {

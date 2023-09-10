@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import Pagination from './Pagination'
+import Pagination from './Pagination.vue'
 </script>
 
 <style lang="scss" scoped>

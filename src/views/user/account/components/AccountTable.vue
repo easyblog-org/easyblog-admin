@@ -42,7 +42,7 @@
           <el-table-column prop="identifier" label="账号" align="center" width="180"/>
           <el-table-column prop="user_id" label="关联用户" align="center" width="180">
             <template #default="scope">
-              <el-button type="primary" text @click="showUser(scope.row.user_id)">
+              <el-button type="primary" text @click="showUser(scope.row.user_code)">
                 查看
               </el-button>
             </template>
@@ -61,7 +61,7 @@
           </el-table-column>
           <el-table-column prop="login_log" label="登录日志" align="center" width="180">
             <template #default="scope">
-              <el-button type="primary" text @click="showLogInLog(scope.row.user_id,scope.row.id)">
+              <el-button type="primary" text @click="showLogInLog(scope.row.user_code,scope.row.code)">
                 查看
               </el-button>
             </template>
@@ -205,10 +205,10 @@ const handleCurrentChange = (pageNo: number) => {
 
 /**
  * 展示User详情
- * @param user_id
+ * @param user_
  */
-const showUser = (user_id: number) => {
-  userDetailDrawer.value.show(user_id)
+const showUser = (user_code: string) => {
+  userDetailDrawer.value.show(user_code)
 }
 
 /**

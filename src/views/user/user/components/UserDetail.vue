@@ -26,7 +26,7 @@
         </el-col>
         <el-col :span="20">
           <div class="content">
-            <el-tag v-for="(value,index) in userDetail.roles" :key="value.id" class="mx-1"
+            <el-tag v-for="(value,index) in userDetail.roles" :key="value.code" class="mx-1"
                     :class="index!==userDetail.roles-1?'m-tag-gap':''" size="default">
               {{ value.name }}
             </el-tag>
@@ -108,16 +108,16 @@ const userDetail = ref({});
 const loading = ref(true)
 
 
-const show = (user_id: number) => {
+const show = (user_code: string) => {
   title.value = '用户详情'
   loading.value = true
-  loadUserDetail(user_id)
+  loadUserDetail(user_code)
   dialogVisible.value = true
 }
 
-const loadUserDetail = (user_id: number) => {
+const loadUserDetail = (user_code: string) => {
   userClient.details({
-    id: user_id,
+    code: user_code,
     sections:'roles'
   }).then((resp) => {
     userDetail.value = resp

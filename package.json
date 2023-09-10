@@ -33,7 +33,7 @@
     "fuse.js": "^6.6.2",
     "jszip": "^3.9.1",
     "mavon-editor": "^2.10.4",
-    "md-editor-v3": "^1.11.3",
+    "md-editor-v3": "^4.3.0",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.0",

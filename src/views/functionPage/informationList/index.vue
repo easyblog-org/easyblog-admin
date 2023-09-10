@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import SingleCheck from './components/SingleCheck'
-import Search from './components/Search'
-import List from './components/List'
+import SingleCheck from './components/SingleCheck.vue'
+import Search from './components/Search.vue'
+import List from './components/List.vue'
 
 </script>
 

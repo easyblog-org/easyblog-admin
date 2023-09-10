@@ -11,7 +11,7 @@
         <el-row  v-for="(domain, index) in dynamicValidateForm.domains" :gutter="20" :key="domain.key">
           <el-col :span="10">
             <el-form-item
-                :label="'Domain' + index"
+                :label="'Key' + index"
                 :prop="'domains.' + index + '.name'"
                 :rules="{
                     required: true,
@@ -24,7 +24,7 @@
           </el-col>
           <el-col :span="10">
             <el-form-item
-                :label="'Domain' + index"
+                :label="'Value' + index"
                 :prop="'domains.' + index + '.value'"
                 :rules="{
                     required: true,

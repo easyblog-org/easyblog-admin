@@ -1,30 +1,23 @@
-import { createRouter, createWebHistory, RouteRecordRaw,createWebHashHistory,Router } from 'vue-router'
+import {createRouter, RouteRecordRaw, createWebHashHistory} from 'vue-router'
 import Layout from "@/layout/index.vue";
+
 // 扩展继承属性
 interface extendRoute {
-    hidden?:boolean
+    hidden?: boolean
 }
+
 //
 import userRouter from './modules/user'
-import tableRouter from './modules/table'
-import excelRouter from './modules/excel'
+import messageRouter from './modules/message'
+import articleRouter from './modules/article'
 import systemRouter from './modules/system'
-import echartsRouter from './modules/echarts'
-import othersRouter from './modules/other'
-import externalLink from './modules/externalLink'
-import formRouter from './modules/form'
-import functionPageRouter from './modules/functionPage'
+
 
 // 异步组件
 export const asyncRoutes = [
     ...userRouter,
-    ...echartsRouter,
-    ...tableRouter,
-    ...formRouter,
-    ...othersRouter,
-    ...functionPageRouter,
-    ...excelRouter,
-    ...externalLink,
+    ...messageRouter,
+    ...articleRouter,
     ...systemRouter
 ]
 
@@ -43,40 +36,40 @@ export const asyncRoutes = [
  * meta.breadcrumb ==> 如果设置为false，该项将隐藏在breadcrumb中（默认值为true）
  */
 
-export const constantRoutes: Array<RouteRecordRaw&extendRoute> = [
+export const constantRoutes: Array<RouteRecordRaw & extendRoute> = [
     {
         path: "/404",
         name: "404",
         component: () => import("@/views/errorPages/404.vue"),
-        hidden:true,
+        hidden: true,
     },
     {
         path: "/403",
         name: "403",
         component: () => import("@/views/errorPages/403.vue"),
-        hidden:true,
+        hidden: true,
     },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/login/index.vue'),
-    hidden: true,
-    meta: { title: '登录',}
-  },
-  {
-    path: '/',
-    name: 'layout',
-    component: Layout,
-    redirect: '/home',
-    children: [
-      {
-        path: '/home',
-        component: () => import('@/views/home/index.vue'),
-        name: 'home',
-        meta: { title: '首页', icon: 'House', affix: true ,role:['other']}
-      },
-    ]
-  },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/login/index.vue'),
+        hidden: true,
+        meta: {title: '登录',}
+    },
+    {
+        path: '/',
+        name: 'layout',
+        component: Layout,
+        redirect: '/home',
+        children: [
+            {
+                path: '/home',
+                component: () => import('@/views/home/index.vue'),
+                name: 'home',
+                meta: {title: '首页', icon: 'House', affix: true, role: ['other']}
+            },
+        ]
+    }
 ]
 
 /**
@@ -90,9 +83,9 @@ export const notFoundRouter = {
 
 
 const router = createRouter({
-  // history: createWebHistory(process.env.BASE_URL), // history
-  history: createWebHashHistory(), // hash
-  routes:constantRoutes
+    // history: createWebHistory(process.env.BASE_URL), // history
+    history: createWebHashHistory(), // hash
+    routes: constantRoutes
 })
 
 export default router

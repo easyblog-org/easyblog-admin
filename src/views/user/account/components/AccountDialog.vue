@@ -1,5 +1,5 @@
 <template>
-  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
+  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%" draggable>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px">
       <el-form-item label="账户类型" prop="identity_type">
         <el-select
@@ -63,7 +63,7 @@ const rules = reactive({
 })
 
 const ruleForm = reactive({
-  id: null,
+  code: null,
   identity_type: null,
   identifier: null,
   verified: null,
@@ -94,7 +94,7 @@ const show = (item = {}) => {
 const handleClose = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
-      accountClient.update(ruleForm.id, {
+      accountClient.update(ruleForm.code, {
         identity_type: ruleForm.identity_type,
         identifier: ruleForm.identifier,
         verified: ruleForm.verified ? 1 : 0,

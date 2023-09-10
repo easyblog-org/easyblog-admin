@@ -1,6 +1,7 @@
 import * as qiniu from 'qiniu-js'
 import CryptoJS from 'crypto-js'
 import {QINIU_CLOUD_CONFIG} from "@/config";
+import {encrypt} from "@/utils/crypto";
 
 
 function getToken(access_key: string, secret_key: string, bucketname: string) {
@@ -81,5 +82,5 @@ export function uploadFile(file: File) {
         fname: file.name, //文件原文件名
         mimeType: ['image/png', 'image/jpeg','image/jpg', 'image/gif'] //用来限制上传文件类型，为 null 时表示不对文件类型限制；
     };
-    return qiniu.upload(file, key, uptoken, putExtra, config);
+    return qiniu.upload(file, encrypt(key), uptoken, putExtra, config);
 }

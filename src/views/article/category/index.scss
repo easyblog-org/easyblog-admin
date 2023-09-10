@@ -1,0 +1,57 @@
+.m-user {
+  display: flex;
+  flex-direction: row;
+}
+
+.custom-tree-container {
+  min-height: 500px;
+  padding-right: 50px;
+
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    padding-right: 8px;
+
+    .custom-tree-operator {
+      font-size: 15px;
+      font-weight: 800;
+
+      .custom-tree-node-append {
+        color: #409eff;
+      }
+
+      .custom-tree-node-delete {
+        color: #F56C6C;
+      }
+    }
+  }
+}
+
+.tree-search-bar {
+  .el-input__inner {
+    text-align: left !important;
+  }
+
+  width: 100%;
+}
+
+.el-form--inline{
+  width: 100%;
+}
+
+.el-select-dropdown__item {
+  text-align: center;
+}
+
+.el-input--default {
+  height: 40px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+
+
+

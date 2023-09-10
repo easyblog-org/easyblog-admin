@@ -1,11 +1,8 @@
 <template>
-  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%">
+  <el-dialog @close="close" v-model="dialogVisible" :title="title" width="50%" draggable>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="100px">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入用户名"/>
-      </el-form-item>
-      <el-form-item label="角色标识" prop="code" v-if="!isEdit">
-        <el-input v-model="ruleForm.code" placeholder="请输入角色标识"/>
       </el-form-item>
       <el-form-item label="角色描述" prop="desc">
         <el-input v-model="ruleForm.description" placeholder="请输入角色描述"/>
@@ -43,10 +40,8 @@ const emits = defineEmits<{
 const rules = reactive({
   name: [
     {required: true, message: '请输入角色名称', trigger: 'blur'},
-    {min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur'},
-  ],
-  code: [{required: true, message: '请输入角色表示', trigger: 'blur'}],
-  enabled: [{required: true, message: '请选择角色是否启用', trigger: 'change'}]
+    {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'},
+  ]
 })
 
 const ruleForm = reactive({
@@ -81,7 +76,7 @@ const handleClose = async (done: () => void) => {
   await ruleFormRef.value.validate((valid, fields) => {
     if (valid) {
       if (isEdit.value) {
-        roleClient.update(ruleForm.code,{
+        roleClient.update(ruleForm.code, {
           name: ruleForm.name,
           enabled: ruleForm.enabled,
           description: ruleForm.description
