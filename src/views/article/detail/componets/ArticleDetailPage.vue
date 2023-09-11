@@ -127,9 +127,6 @@ const show = () => {
   title.value = '文章详情'
   const code = router.currentRoute.value.query.id
   if (!code) {
-    router.replace({
-      path: '/404'
-    })
     ElMessage.error('出错啦！');
     return;
   }

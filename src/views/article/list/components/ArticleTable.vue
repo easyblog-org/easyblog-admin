@@ -186,19 +186,30 @@ const addHandler = () => {
   })
 }
 
+/**
+ * 编辑文章
+ * @param row
+ */
+const editHandler = (row) => {
+  router.replace({
+    path: '/article/edit',
+    query: {id: row['code']}
+  })
+}
+
 
 /**
  * 删除文章
  * @param row
  */
 const del = (row) => {
-  loading.value = true
   ElMessageBox.confirm('你确定要删除当前项吗?', '温馨提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
     draggable: true,
   }).then(() => {
+    loading.value = true
     articleClient.update(row['code'], {
       deleted: true,
     }).then(() => {
@@ -213,7 +224,7 @@ const del = (row) => {
       })
     })
   }).finally(() => {
-    loading.value = true
+    loading.value = false
   })
 }
 
