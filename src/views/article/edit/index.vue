@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 
-import ArticleEditPage from "@/views/article/add/componets/ArticleAddPage.vue";
+import ArticleEditPage from "@/views/article/edit/componets/ArticleEditPage.vue";
 </script>
 
 <style scoped lang="scss">

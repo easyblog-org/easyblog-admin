@@ -461,7 +461,7 @@ export class ArticleClient extends Client {
      * @param code
      * @param params
      */
-    update(code: string, params: any): Promise<any> {
+    update(code: any, params: any): Promise<any> {
         return this.request.put(`/admin/v1/article/${code}`, params);
     }
 

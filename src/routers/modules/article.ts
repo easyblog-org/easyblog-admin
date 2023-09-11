@@ -37,6 +37,13 @@ const articleRouter = [{
             component: () => import('@/views/article/add/index.vue'),
             meta: { title: '创建文章' , icon: 'EditPen'}
         },
+        {
+            path: 'edit',
+            name: 'edit',
+            component: () => import('@/views/article/edit/index.vue'),
+            meta: { title: '编辑文章' , icon: 'EditPen'},
+            hidden: true
+        },
     ]
 }]
 
