@@ -257,21 +257,22 @@ const onUploadImg = async (files, callback) => {
   const res = await Promise.all(
       files.map((file) => {
         return new Promise((rev, rej) => {
-          const form = new FormData();
-          form.append('file', file);
-
-          // upload('/api/img/upload', form, {
-          //       headers: {
-          //         'Content-Type': 'multipart/form-data'
-          //       }
-          //     })
-          //     .then((res) => rev(res))
-          //     .catch((error) => rej(error));
+          uploadFile(file).subscribe({
+            error: errResult => {
+              // 失败报错信息
+              rej(errResult)
+              ElMessage.error(`上传七牛云失败: ${errResult.message}`);
+            },
+            complete: result => {
+              // 接收成功后返回的信息
+              rev("https://" + QINIU_CLOUD_CONFIG.domain + `/${result.key}`);
+            }
+          });
         });
       })
   );
 
-  callback(res.map((item) => item.data.url));
+  callback(res.map((item) => item));
 };
 
 
